@@ -125,13 +125,13 @@ class Game:
         # Overall status
         if self.player.happiness >= 70:
             status = "THRIVING"
-            mood = "The hold hums with song and hammer-fall."
+            mood = "The hold hums with song and the clanging of hammers."
         elif self.player.happiness >= 50:
             status = "STABLE"
-            mood = "The hold endures, though whispers of worry echo in the tunnels."
+            mood = "The hold endures, though whispers of worry echo throughout the tunnels."
         else:
             status = "STRUGGLING"
-            mood = "The hold is grim. Dwarves mutter in the dark."
+            mood = "The hold is grim. Dwarves mutter among themselves, unsure of whether they'll live to see tomorrow."
 
         print(f"Hold Status: {status}")
         print(mood)
@@ -148,7 +148,7 @@ class Game:
         if self.player.water < 20:
             print("💧 The wells are dry. The mushroom farms wither.")
         if self.player.medicine < 10:
-            print("💊 The infirmary lacks supplies. Coughs spread in the mines.")
+            print("💊 The infirmary lacks supplies. Disease begins to spread in the mines.")
         if self.player.happiness < 40:
             print("😟 Morale is broken. Some dwarves speak of leaving the hold.")
 
@@ -162,29 +162,29 @@ class Game:
         # If accepted — report based on what they got
         if npc.accepted is True:
             if npc.resource == "food":
-                print(f"✅ {npc.name} the {npc.role}: Well-fed. Her kin eat tonight.")
+                print(f"✅ {npc.name} the {npc.role}: Food is restocked. Her kin will get to eat tonight.")
             elif npc.resource == "water":
-                print(f"✅ {npc.name} the {npc.role}: Refreshed. The farm is watered.")
+                print(f"✅ {npc.name} the {npc.role}: Water is restocked. The crops are moistened and are able to grow a little more.")
             elif npc.resource == "medicine":
-                print(f"✅ {npc.name} the {npc.role}: Stocked. The sick will mend.")
+                print(f"✅ {npc.name} the {npc.role}: Medicine is restocked. the injured's wounds finally be taken care of.")
 
         # If denied due to lack of resources
         elif npc.status == "denied":
             if npc.resource == "food":
-                print(f"⚠️ {npc.name} the {npc.role}: Hungry. Her kin go without.")
+                print(f"⚠️ {npc.name} the {npc.role}: The growls of her stomach are audible. Her kin and the rest of the hold will soon follow...")
             elif npc.resource == "water":
-                print(f"⚠️ {npc.name} the {npc.role}: Parched. The farm dries.")
+                print(f"⚠️ {npc.name} the {npc.role}: A drought begins to fester among the hold. The crops are withering, soon to be followed by your brethren if more isn't procured soon...")
             elif npc.resource == "medicine":
-                print(f"⚠️ {npc.name} the {npc.role}: Empty-handed. The sick worsen.")
+                print(f"⚠️ {npc.name} the {npc.role}: The conditions of the sick workers worsen. The lives of your fellow-men may start dwindling...")
 
         # If rejected by choice
         elif npc.status == "rejected":
             if npc.resource == "food":
-                print(f"❌ {npc.name} the {npc.role}: Bitter. She feels abandoned by the hold.")
+                print(f"❌ {npc.name} the {npc.role}: She glares at you with resentment. She will remember you being the reason her kin will starve.")
             elif npc.resource == "water":
-                print(f"❌ {npc.name} the {npc.role}: Resentful. He mutters of leaving.")
+                print(f"❌ {npc.name} the {npc.role}: He flashes a visible frown and leaves. He mutters prayers under his breath, hoping the crops can hold out a little longer.")
             elif npc.resource == "medicine":
-                print(f"❌ {npc.name} the {npc.role}: Despairing. He fears for the sick.")
+                print(f"❌ {npc.name} the {npc.role}: A grim shadow looms over his face. He fears for the worst as the injured workers' wounds will worsen over time.")
 
     # ============================================
     # UPGRADES
