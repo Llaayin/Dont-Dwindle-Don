@@ -1,5 +1,3 @@
 # Dont-Dwindle-Don
 
-Don't Dwindle, Don! is a Python-based resource management simulator where players make decisions to manage village resources and help NPCs. currently a prototype.
-
-You play as Don, 
+Description: Don't Dwindle, Don! is a game that revolves around a resource managing dwarf named Don who is swamped by requests day by day by people who're in need of resources like food, water, and other needs of the community. Your job is to choose whether to accept or reject these requests according to how much resources you have in stock as your choices can determine how well your community thrives, and whether or not you'll have enough resources left to live to see another day. The target audience is students who can learn management skills and proper decision-making skills while also gaining awareness about important resource-management skills. 
