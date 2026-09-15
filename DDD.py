@@ -1,7 +1,7 @@
 # ============================================
-# Don't Dwindle, Don! (DDD)
+# Don't Dwindle, Don! (DDD) by Aaron Jared Lee
 # Resource Management Simulator
-# OOP CLI Prototype — v3 Dwarven Hold Edition
+# OOP CLI Prototype — v5 
 # ============================================
 
 class Player:
@@ -46,25 +46,22 @@ class Game:
         ]
 
     # ============================================
-    # LOGIN
+    # TITLE SCREEN
     # ============================================
-    def login(self):
+    def title_screen(self):
         print("================================")
         print("      DON'T DWINDLE, DON!")
         print("================================")
-
-        name = input("\nEnter your name: ")
-        input("Enter password: ")
-
-        self.player = Player(name)
-        print("\nLogin successful!")
+        print("\nPress ENTER to begin Management")
+        input()
 
     # ============================================
     # NEW GAME
     # ============================================
     def new_game(self):
+        self.player = Player("Don")
         print("\n--- NEW SAVE ---")
-        print("Welcome, Don!")
+        print("Great to see you, Don! Be sure to manage your resources well and remember our motto: Don't dwindle!")
         self.player.show_resources()
         input("\nPress Enter to begin Day 1...")
 
@@ -72,6 +69,9 @@ class Game:
     # HANDLE REQUESTS
     # ============================================
     def handle_requests(self):
+        # Track starting happiness for end-of-day comparison
+        self.start_happiness = self.player.happiness
+
         for npc in self.npcs:
 
             print("\n================================")
@@ -107,6 +107,10 @@ class Game:
                 npc.status = "rejected"
                 print("\nRequest rejected.")
 
+            # Show this dwarf's entry in Don's Docu-log
+            print("\n--- Don's Docu-log ---")
+            self.report_dwarf(npc)
+
             self.player.show_resources()
             input("\nPress Enter to continue...")
 
@@ -136,10 +140,16 @@ class Game:
         print(f"Hold Status: {status}")
         print(mood)
 
-        # Villager-specific status updates (UPGRADED)
-        print("\n--- Dwarf Reports ---")
-        for npc in self.npcs:
-            self.report_dwarf(npc)
+        # General day-end outcome based on happiness change
+        print("\n--- Day's Outcome ---")
+        if self.player.happiness > self.start_happiness:
+            print("🌟 The hold's spirit has risen today. The dwarves work with renewed vigor,")
+            print("   their bellies full and their hearts light. Don's leadership has not gone unnoticed.")
+        elif self.player.happiness < self.start_happiness:
+            print("💀 The hold's morale has fallen. Grumbles echo through the tunnels,")
+            print("   and the dwarves' gaze fall on Don with doubt. A shadow hangs over the hold.")
+        else:
+            print("⚖️ The hold remains unchanged. Neither joy nor sorrow stirs the tunnels tonight.")
 
         # Resource-based warnings
         print("\n--- Hold Outlook ---")
@@ -152,7 +162,7 @@ class Game:
         if self.player.happiness < 40:
             print("😟 Morale is broken. Some dwarves speak of leaving the hold.")
 
-        print("\nThe hold's fate rests on your judgment, Don.")
+        print("\nRemember not to dwindle, Don. The hold has no time for mistakes.")
         input("\nPress Enter for upgrades...")
 
     # ============================================
@@ -162,11 +172,11 @@ class Game:
         # If accepted — report based on what they got
         if npc.accepted is True:
             if npc.resource == "food":
-                print(f"✅ {npc.name} the {npc.role}: Food is restocked. Her kin will get to eat tonight.")
+                print(f"✅ {npc.name} the {npc.role}: Food is restocked. Brunhilde and her kin will get to eat tonight.")
             elif npc.resource == "water":
-                print(f"✅ {npc.name} the {npc.role}: Water is restocked. The crops are moistened and are able to grow a little more.")
+                print(f"✅ {npc.name} the {npc.role}: Water is restocked. The crops have been moistened and are able to grow a little more.")
             elif npc.resource == "medicine":
-                print(f"✅ {npc.name} the {npc.role}: Medicine is restocked. the injured's wounds finally be taken care of.")
+                print(f"✅ {npc.name} the {npc.role}: Medicine is restocked. Durin breathes a sigh of relief as the injureds workers' wounds can finally be taken care of.")
 
         # If denied due to lack of resources
         elif npc.status == "denied":
@@ -182,9 +192,9 @@ class Game:
             if npc.resource == "food":
                 print(f"❌ {npc.name} the {npc.role}: She glares at you with resentment. She will remember you being the reason her kin will starve.")
             elif npc.resource == "water":
-                print(f"❌ {npc.name} the {npc.role}: He flashes a visible frown and leaves. He mutters prayers under his breath, hoping the crops can hold out a little longer.")
+                print(f"❌ {npc.name} the {npc.role}: Thrain flashes a visible frown and leaves. He mutters prayers under his breath, hoping the crops can hold out a little longer.")
             elif npc.resource == "medicine":
-                print(f"❌ {npc.name} the {npc.role}: A grim shadow looms over his face. He fears for the worst as the injured workers' wounds will worsen over time.")
+                print(f"❌ {npc.name} the {npc.role}: A grim shadow looms over his face. Durin fears for the worst as the injured workers' wounds will worsen over time.")
 
     # ============================================
     # UPGRADES
@@ -196,8 +206,8 @@ class Game:
 
         print(f"Gold: {self.player.gold}")
 
-        print("\n1. Buy Food +10 (50 Gold)")
-        print("2. Buy Water +10 (50 Gold)")
+        print("\n1. Increase maximum food capacity +10 (50 Gold)")
+        print("2. Increase maximum water capacity +10 (50 Gold)")
         print("3. Skip")
 
         choice = input("\nChoice: ")
@@ -219,7 +229,7 @@ class Game:
     # RUN
     # ============================================
     def run(self):
-        self.login()
+        self.title_screen()
 
         print("\n1. Start New Save")
         print("2. Exit")
