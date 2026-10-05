@@ -188,6 +188,7 @@ if "game" not in st.session_state:
     st.session_state.screen = "title"
     st.session_state.request_index = 0
     st.session_state.day_consequences = []
+    st.session_state.requests_this_day = 0
 
 game = st.session_state.game
 
@@ -224,6 +225,7 @@ if st.session_state.screen == "title":
         game.new_game()
         st.session_state.request_index = 0
         st.session_state.day_consequences = []
+        st.session_state.requests_this_day = 0
         st.session_state.screen = "play"
         st.rerun()
 
@@ -249,6 +251,7 @@ elif st.session_state.screen == "new_day":
     if st.button("▶️ BEGIN DAY", type="primary", use_container_width=True):
         game.start_happiness = game.player.happiness
         st.session_state.request_index = 0
+        st.session_state.requests_this_day = 0
         st.session_state.screen = "play"
         st.rerun()
 
@@ -300,6 +303,7 @@ elif st.session_state.screen == "play":
             entry = game.report_dwarf(npc)
             game.doculog.append(entry)
             st.session_state.request_index += 1
+            st.session_state.requests_this_day += 1
             st.rerun()
 
     with col_b:
@@ -311,6 +315,7 @@ elif st.session_state.screen == "play":
             entry = game.report_dwarf(npc)
             game.doculog.append(entry)
             st.session_state.request_index += 1
+            st.session_state.requests_this_day += 1
             st.rerun()
 
     if game.doculog:
@@ -385,6 +390,31 @@ elif st.session_state.screen == "evaluation":
     st.divider()
     st.write("**Remember not to dwindle, Don.**")
 
+    # ============================================
+    # DOCU-LOG ACCESS FROM EVALUATION
+    # ============================================
+    st.divider()
+
+    with st.expander("📖 Open Don's Docu-log (Today's Entries)"):
+        today_start = max(0, len(game.doculog) - st.session_state.requests_this_day)
+        todays_entries = game.doculog[today_start:]
+
+        if todays_entries:
+            for entry in todays_entries:
+                st.write(entry)
+        else:
+            st.write("No entries today.")
+
+    with st.expander("📚 View Full Docu-log (All Days)"):
+        if game.doculog:
+            for entry in game.doculog:
+                st.write(entry)
+        else:
+            st.write("The Docu-log is empty.")
+
+    # ============================================
+    # CONTINUE
+    # ============================================
     if game.check_game_over():
         st.session_state.screen = "game_over"
         st.rerun()
