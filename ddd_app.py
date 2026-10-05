@@ -226,6 +226,47 @@ elif st.session_state.screen == "evaluation":
     else:
         st.info("⚖️ The hold remains unchanged. Neither joy nor sorrow stirs the tunnels tonight.")
 
+    # ============================================
+    # NEW: MORALE-BASED GOLD INCOME
+    # ============================================
+    st.divider()
+    st.subheader("💰 Hold Income")
+
+    morale = game.player.happiness
+    if morale >= 90:
+        income = 40
+        income_msg = "The mines roar with activity. Every dwarf works with purpose."
+    elif morale >= 70:
+        income = 30
+        income_msg = "The forges burn bright. The hold produces steadily."
+    elif morale >= 50:
+        income = 20
+        income_msg = "Work continues, though at a measured pace."
+    elif morale >= 30:
+        income = 10
+        income_msg = "Few hammers fall. The hold's output is thin."
+    elif morale >= 10:
+        income = 0
+        income_msg = "The mines sit silent. No gold is produced today."
+    else:
+        income = -10
+        income_msg = "Desertion and disrepair cost the hold gold."
+
+    game.player.gold += income
+    game.gold_income = income  # store for display later
+
+    st.write(income_msg)
+
+    if income > 0:
+        st.success(f"💰 Gold gained: **+{income}**")
+    elif income < 0:
+        st.error(f"💸 Gold lost: **{income}**")
+    else:
+        st.warning("No change in gold.")
+
+    # ============================================
+    # HOLDOUT LOOKOUT WARNINGS
+    # ============================================
     st.divider()
     st.subheader("--- Hold Outlook ---")
     warnings = []
