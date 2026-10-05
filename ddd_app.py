@@ -1,7 +1,7 @@
 # ============================================
 # Don't Dwindle, Don! (DDD) by Aaron Jared Lee
 # Resource Management Simulator
-# OOP Streamlit Version — v2
+# OOP Streamlit Version — v3
 # ============================================
 
 import streamlit as st
@@ -30,12 +30,13 @@ class Player:
 # NPC CLASS
 # ============================================
 class NPC:
-    def __init__(self, name, request, resource, amount, role):
+    def __init__(self, name, request, resource, amount, role, intro=None):
         self.name = name
         self.request = request
         self.resource = resource
         self.amount = amount
         self.role = role
+        self.intro = intro
         self.accepted = None
         self.status = "fine"
 
@@ -44,6 +45,8 @@ class NPC:
 # GAME CLASS
 # ============================================
 class Game:
+    MAX_DAY = 3
+
     def __init__(self):
         self.player = None
         self.day = 1
@@ -56,7 +59,6 @@ class Game:
         self.load_day(1)
 
     def load_day(self, day):
-        """Load the NPCs for a specific day."""
         if day == 1:
             self.npcs = [
                 NPC("Brunhilda", "needs food for her kin.", "food", 10, "Miner"),
@@ -68,15 +70,29 @@ class Game:
                 NPC("Brunhilda", "needs extra food — her kin are still hungry.", "food", 12, "Miner"),
                 NPC("Thrain", "needs more water — the drought worsens.", "water", 10, "Farmer"),
                 NPC("Durin", "needs more medicine — the sick are multiplying.", "medicine", 8, "Healer"),
-                NPC("Grimwald", "the blacksmith needs gold to repair the forges.", "gold", 20, "Blacksmith"),
+                NPC(
+                    "Grimwald",
+                    "needs gold to repair the forges.",
+                    "gold",
+                    20,
+                    "Blacksmith",
+                    intro="A stout dwarf with soot-stained hands steps forward. 'Name's Grimwald. I keep the forges burning — the heart of our hold. Without repairs, we lose our edge. And without our edge, we lose everything.'"
+                ),
             ]
         elif day >= 3:
             self.npcs = [
                 NPC("Brunhilda", "needs food for the growing hold.", "food", 15, "Miner"),
                 NPC("Thrain", "needs water for the mushroom farm.", "water", 12, "Farmer"),
                 NPC("Durin", "needs medicine — fever spreads in the mines.", "medicine", 10, "Healer"),
-                NPC("Grimwald", "the forges need repairs once more.", "gold", 25, "Blacksmith"),
-                NPC("Sigrun", "the runekeeper needs rare herbs for wards.", "medicine", 6, "Runekeeper"),
+                NPC("Grimwald", "needs more gold for the forges.", "gold", 25, "Blacksmith"),
+                NPC(
+                    "Sigrun",
+                    "needs rare herbs for the hold's protective wards.",
+                    "medicine",
+                    6,
+                    "Runekeeper",
+                    intro="An elderly dwarf in rune-stitched robes approaches. 'I am Sigrun, keeper of the wards. The old runes weaken with each passing night. Without rare herbs to renew them, dark things will find their way in.'"
+                ),
             ]
 
     def new_game(self):
@@ -87,7 +103,6 @@ class Game:
         self.load_day(1)
 
     def apply_yesterday_consequences(self):
-        """Apply consequences from last day's decisions before starting a new one."""
         if not self.day_summaries:
             return []
         last = self.day_summaries[-1]
@@ -119,7 +134,9 @@ class Game:
             elif npc.resource == "medicine":
                 return f"✅ {npc.name} the {npc.role}: Medicine is restocked. {npc.name} breathes a sigh of relief as the injured workers' wounds can finally be taken care of."
             elif npc.resource == "gold":
-                return f"✅ {npc.name} the {npc.role}: Gold received. The forges will be repaired by morning."
+                if npc.name == "Grimwald":
+                    return f"✅ Grimwald the Blacksmith: The gold is handed over. 'My thanks, Don. I'll have the forges roaring by morning.'"
+                return f"✅ {npc.name} the {npc.role}: Gold received."
         elif npc.status == "denied":
             if npc.resource == "food":
                 return f"⚠️ {npc.name} the {npc.role}: The growls of their stomach are audible. Their kin and the rest of the hold will soon follow..."
@@ -128,16 +145,21 @@ class Game:
             elif npc.resource == "medicine":
                 return f"⚠️ {npc.name} the {npc.role}: The conditions of the sick workers worsen. The lives of your fellow-men may start dwindling..."
             elif npc.resource == "gold":
-                return f"⚠️ {npc.name} the {npc.role}: The forges remain broken. Work slows, and morale suffers."
+                if npc.name == "Grimwald":
+                    return f"⚠️ Grimwald the Blacksmith: He stares at the empty coffer. 'No gold? Then no repairs. The forges grow cold, Don.'"
+                return f"⚠️ {npc.name} the {npc.role}: The forges remain broken."
         elif npc.status == "rejected":
             if npc.resource == "food":
                 return f"❌ {npc.name} the {npc.role}: They glare at you with resentment. They will remember you being the reason their kin will starve."
             elif npc.resource == "water":
-                return f"❌ {npc.name} the {npc.role}: They flash a visible frown and leave. They mutter prayers under their breath, hoping the crops can hold out."
+                return f"❌ {npc.name} the {npc.role}: They flash a visible frown and leave."
             elif npc.resource == "medicine":
-                return f"❌ {npc.name} the {npc.role}: A grim shadow looms over their face. They fear for the worst as the injured workers' wounds worsen."
+                return f"❌ {npc.name} the {npc.role}: A grim shadow looms over their face."
             elif npc.resource == "gold":
-                return f"❌ {npc.name} the {npc.role}: They shake their head in disappointment. The forges stay cold."
+                if npc.name == "Grimwald":
+                    return f"❌ Grimwald the Blacksmith: He shakes his head slowly. 'So that's how it is. I'll remember this, Don.'"
+                return f"❌ {npc.name} the {npc.role}: They shake their head in disappointment."
+        return f"— {npc.name} made no request today."
 
     def calculate_income(self):
         morale = self.player.happiness
@@ -153,6 +175,9 @@ class Game:
             return 0
         else:
             return -10
+
+    def check_game_over(self):
+        return self.player.happiness <= 0
 
 
 # ============================================
@@ -178,7 +203,7 @@ if st.session_state.screen in ["play", "evaluation", "upgrades", "new_day"]:
     st.sidebar.metric("💰 Gold", game.player.gold)
     st.sidebar.metric("😊 Morale", game.player.happiness)
     st.sidebar.divider()
-    st.sidebar.caption(f"📅 Day {game.day}")
+    st.sidebar.caption(f"📅 Day {game.day} of {Game.MAX_DAY}")
 
 
 # ============================================
@@ -189,10 +214,10 @@ if st.session_state.screen == "title":
     st.subheader("A Dwarven Resource Management Game")
     st.divider()
     st.write("You are **Don**, leader of a dwarven hold.")
-    st.write("Dwarves come to you with requests — food, water, medicine.")
+    st.write("Dwarves come to you with requests — food, water, medicine, gold.")
     st.write("Every choice affects the hold's morale and survival.")
     st.write("")
-    st.write("**Remember our motto: Don't dwindle!**")
+    st.write("**Survive 3 days. Remember our motto: Don't dwindle!**")
     st.divider()
 
     if st.button("▶️ BEGIN MANAGEMENT", type="primary", use_container_width=True):
@@ -242,6 +267,10 @@ elif st.session_state.screen == "play":
 
     st.title(f"📜 Dwarf Request — Day {game.day}")
     st.divider()
+
+    if npc.intro:
+        st.info(npc.intro)
+        st.divider()
 
     col1, col2 = st.columns([1, 2])
     with col1:
@@ -308,7 +337,7 @@ elif st.session_state.screen == "evaluation":
         mood = "The hold endures, though whispers of worry echo throughout the tunnels."
     else:
         status = "STRUGGLING"
-        mood = "The hold is grim. Dwarves mutter among themselves, unsure of whether they'll live to see tomorrow."
+        mood = "The hold is grim. Dwarves mutter among themselves."
 
     st.markdown(f"### Hold Status: **{status}**")
     st.write(mood)
@@ -355,6 +384,10 @@ elif st.session_state.screen == "evaluation":
 
     st.divider()
     st.write("**Remember not to dwindle, Don.**")
+
+    if game.check_game_over():
+        st.session_state.screen = "game_over"
+        st.rerun()
 
     if st.button("▶️ GO TO FORGE & MARKET", type="primary", use_container_width=True):
         game.day_summaries.append({
@@ -408,9 +441,55 @@ elif st.session_state.screen == "upgrades":
             st.rerun()
 
     st.divider()
-    if st.button("▶️ BEGIN NEXT DAY", use_container_width=True, type="primary"):
-        game.day += 1
-        game.load_day(game.day)
-        st.session_state.day_consequences = game.apply_yesterday_consequences()
-        st.session_state.screen = "new_day"
+
+    if game.day >= Game.MAX_DAY:
+        if st.button("▶️ END THE BETA", use_container_width=True, type="primary"):
+            st.session_state.screen = "end"
+            st.rerun()
+    else:
+        if st.button("▶️ BEGIN NEXT DAY", use_container_width=True, type="primary"):
+            game.day += 1
+            game.load_day(game.day)
+            st.session_state.day_consequences = game.apply_yesterday_consequences()
+            st.session_state.screen = "new_day"
+            st.rerun()
+
+
+# ============================================
+# END OF BETA SCREEN
+# ============================================
+elif st.session_state.screen == "end":
+    st.title("🌅 A NEW DAWN BREAKS")
+    st.divider()
+    st.write(f"Thank you for playing **Don't Dwindle, Don!**")
+    st.write(f"**Days survived:** {Game.MAX_DAY}")
+    st.write("")
+    st.write("This is the end of the beta.")
+    st.write("More days, dwarves, and challenges to come.")
+    st.divider()
+
+    st.subheader("--- Final Docu-log ---")
+    for entry in game.doculog:
+        st.write(entry)
+
+    st.divider()
+    if st.button("🔁 PLAY AGAIN", type="primary", use_container_width=True):
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
+        st.rerun()
+
+
+# ============================================
+# GAME OVER SCREEN
+# ============================================
+elif st.session_state.screen == "game_over":
+    st.title("💀 THE HOLD HAS FALLEN")
+    st.divider()
+    st.write("The morale of your people reached zero.")
+    st.write("Dwarves abandoned the hold. Don's leadership has failed.")
+    st.write(f"**Days survived:** {game.day}")
+    st.divider()
+    if st.button("🔁 TRY AGAIN", type="primary", use_container_width=True):
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
         st.rerun()
