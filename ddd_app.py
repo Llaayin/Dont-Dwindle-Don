@@ -218,7 +218,7 @@ if st.session_state.screen == "title":
     st.write("Dwarves come to you with requests — food, water, medicine, gold.")
     st.write("Every choice affects the hold's morale and survival.")
     st.write("")
-    st.write("**Survive 3 days. Remember our motto: Don't dwindle!**")
+    st.write("**And as always Don, remember our Hold's motto: Don't Dwindle!**")
     st.divider()
 
     if st.button("▶️ BEGIN MANAGEMENT", type="primary", use_container_width=True):
