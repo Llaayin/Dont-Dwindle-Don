@@ -76,7 +76,7 @@ class Game:
                     "gold",
                     20,
                     "Blacksmith",
-                    intro="A stout dwarf with soot-stained hands steps forward. 'Name's Grimwald. I keep the forges burning — the heart of our hold. Without repairs, we lose our edge. And without our edge, we lose everything.'"
+                    intro="A stout dwarf with soot-stained hands steps forward. 'Name's Grimwald. I'm the head of the forge, the heart of our hold. Without repairs, we'll lose our edge. And without our edge, we'll lose everything.'"
                 ),
             ]
         elif day >= 3:
@@ -91,7 +91,7 @@ class Game:
                     "medicine",
                     6,
                     "Runekeeper",
-                    intro="An elderly dwarf in rune-stitched robes approaches. 'I am Sigrun, keeper of the wards. The old runes weaken with each passing night. Without rare herbs to renew them, dark things will find their way in.'"
+                    intro="An elderly dwarf in rune-stitched robes approaches. 'I am Sigrun, the guardian of the wards. The old barrier runes weaken with each passing night. Without rare herbs to renew them, dark things will find their way in.'"
                 ),
             ]
 
