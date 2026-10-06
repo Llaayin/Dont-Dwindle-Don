@@ -214,7 +214,7 @@ if st.session_state.screen == "title":
     st.title("⛏️ DON'T DWINDLE, DON!")
     st.subheader("A Dwarven Resource Management Game")
     st.divider()
-    st.write("You are **Don**, the Resource Manager of the Hold..")
+    st.write("You are **Don**, the Resource Manager of the Hold.")
     st.write("Your fellow dwarves will come to you with all kinds of requests — food, water, medicine, gold.")
     st.write("Every choice you make affects the hold's morale and survival.")
     st.write("")
