@@ -146,15 +146,15 @@ class Game:
                 return f"⚠️ {npc.name} the {npc.role}: The conditions of the sick workers worsen. The lives of your fellow-men may start dwindling..."
             elif npc.resource == "gold":
                 if npc.name == "Grimwald":
-                    return f"⚠️ Grimwald the Blacksmith: He stares at the empty coffer. 'No gold? Then no repairs. The forges grow cold, Don.'"
+                    return f"⚠️ Grimwald the Blacksmith: He stares at the empty coffer. 'No gold? Then no repairs. Don't let the forges grow too cold, Don.'"
                 return f"⚠️ {npc.name} the {npc.role}: The forges remain broken."
         elif npc.status == "rejected":
             if npc.resource == "food":
                 return f"❌ {npc.name} the {npc.role}: They glare at you with resentment. They will remember you being the reason their kin will starve."
             elif npc.resource == "water":
-                return f"❌ {npc.name} the {npc.role}: They flash a visible frown and leave."
+                return f"❌ {npc.name} the {npc.role}: {npc.name} flashes a visible frown and leaves."
             elif npc.resource == "medicine":
-                return f"❌ {npc.name} the {npc.role}: A grim shadow looms over their face."
+                return f"❌ {npc.name} the {npc.role}: A grim shadow looms over {npc.name}'s face."
             elif npc.resource == "gold":
                 if npc.name == "Grimwald":
                     return f"❌ Grimwald the Blacksmith: He shakes his head slowly. 'So that's how it is. I'll remember this, Don.'"
