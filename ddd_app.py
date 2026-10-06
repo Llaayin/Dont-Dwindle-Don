@@ -113,10 +113,10 @@ class Game:
             consequences.append("😟 The hold's low morale lingers. Some dwarves woke up angry (−5 morale).")
         elif last["morale_end"] >= 80:
             self.player.happiness += 3
-            consequences.append("😊 The hold's good spirits continue. Dwarves greet you with warmth (+3 morale).")
+            consequences.append("😊 The hold's good spirits continue. Your fellow dwarves greet you with warmth (+3 morale).")
 
         if last["food_end"] < 15:
-            consequences.append("🍞 Food stores are critically low. Some dwarves begin hoarding.")
+            consequences.append("🍞 Food supplies are critically low. Some dwarves begin to starve.")
         if last["medicine_end"] < 8:
             self.player.happiness -= 5
             consequences.append("💊 Sick dwarves went untreated overnight (−5 morale).")
