@@ -62,14 +62,14 @@ class Game:
     def load_day(self, day):
         if day == 1:
             self.npcs = [
-                NPC("Brunhilda", "needs food for her kin.", "food", 10, "Miner"),
-                NPC("Thrain", "needs water for the mushroom farm.", "water", 8, "Farmer"),
-                NPC("Durin", "needs medicine for the infirmary.", "medicine", 5, "Healer"),
+                NPC("Brunhilda", "needs food for her kin, their stomachs growing louder by the day.", "food", 10, "Miner"),
+                NPC("Thrain", "needs water for the mushroom farm before the mushrooms dry up.", "water", 8, "Farmer"),
+                NPC("Durin", "needs medicine for the infirmary in order to tend to the sick and the wounded.", "medicine", 5, "Healer"),
             ]
         elif day == 2:
             self.npcs = [
-                NPC("Brunhilda", "needs extra food — her kin are still hungry.", "food", 12, "Miner"),
-                NPC("Thrain", "needs more water — the drought worsens.", "water", 10, "Farmer"),
+                NPC("Brunhilda", "needs extra food for an extra refugee along with the rest of her kin.", "food", 12, "Miner"),
+                NPC("Thrain", "needs more water as the ground dries up faster than he expected, threatening the loss of crops.", "water", 10, "Farmer"),
                 NPC("Durin", "needs more medicine — the sick are multiplying.", "medicine", 8, "Healer"),
                 NPC(
                     "Grimwald",
@@ -77,22 +77,22 @@ class Game:
                     "gold",
                     20,
                     "Blacksmith",
-                    intro="A stout dwarf with soot-stained hands steps forward. 'Name's Grimwald. I'm the head of the forge, the heart of our hold. Without repairs, we'll lose our edge. And without our edge, we'll lose everything.'"
+                    intro="A stout dwarf with soot-stained hands steps forward. 'Name's Grimwald, yeah. I'm the head of the forge, the heart of our hold. Without repairs, we'll lose our edge. And without our edge, we'll lose everything.'"
                 ),
             ]
         elif day >= 3:
             self.npcs = [
-                NPC("Brunhilda", "needs food for the growing hold.", "food", 15, "Miner"),
-                NPC("Thrain", "needs water for the mushroom farm.", "water", 12, "Farmer"),
-                NPC("Durin", "needs medicine — fever spreads in the mines.", "medicine", 10, "Healer"),
-                NPC("Grimwald", "needs more gold for the forges.", "gold", 25, "Blacksmith"),
+                NPC("Brunhilda", "makes a request for more food as more hungry wails can be heard in the distance.", "food", 15, "Miner"),
+                NPC("Thrain", "needs water to moisten the soil for the mycelium to thrive.", "water", 12, "Farmer"),
+                NPC("Durin", "needs more medicine as a new fever spreads in the mines.", "medicine", 10, "Healer"),
+                NPC("Grimwald", "requests for more gold funding in order to reheat the forges.", "gold", 25, "Blacksmith"),
                 NPC(
                     "Sigrun",
                     "needs rare herbs for the hold's protective wards.",
                     "medicine",
                     6,
                     "Runekeeper",
-                    intro="An elderly dwarf in rune-stitched robes approaches. 'I am Sigrun, the guardian of the wards. The old barrier runes weaken with each passing night. Without rare herbs to renew them, dark things will find their way in.'"
+                    intro="An elderly dwarf in rune-stitched robes approaches. 'I be Sigrun,  guardian of ye wards. The old barrier runes over yonder weaken with each passing night. Without rare herbs to renew them, dark things will find their way in.'"
                 ),
             ]
 
@@ -186,7 +186,7 @@ class Game:
                 return f"❌ {npc.name} the {npc.role}: A grim shadow looms over {npc.name}'s face."
             elif npc.resource == "gold":
                 if npc.name == "Grimwald":
-                    return f"❌ Grimwald the Blacksmith: He shakes his head slowly. 'So that's how it is. I'll remember this, Don.'"
+                    return f"❌ Grimwald the Blacksmith: He shakes his head slowly. 'So that's how it be then, huh? I'll remember this, Don.'"
                 return f"❌ {npc.name} the {npc.role}: They shake their head in disappointment."
         return f"— {npc.name} made no request today."
 
