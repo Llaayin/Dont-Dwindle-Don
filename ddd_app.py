@@ -1,10 +1,11 @@
 # ============================================
 # Don't Dwindle, Don! (DDD) by Aaron Jared Lee
 # Resource Management Simulator
-# OOP Streamlit Version — v3
+# OOP Streamlit Version — v4 (Save/Load)
 # ============================================
 
 import streamlit as st
+import json
 
 st.set_page_config(
     page_title="Don't Dwindle, Don!",
@@ -101,6 +102,34 @@ class Game:
         self.doculog = []
         self.day_summaries = []
         self.load_day(1)
+
+    def to_dict(self):
+        """Convert game state to a dictionary for saving."""
+        return {
+            "day": self.day,
+            "food": self.player.food,
+            "water": self.player.water,
+            "medicine": self.player.medicine,
+            "gold": self.player.gold,
+            "happiness": self.player.happiness,
+            "doculog": self.doculog,
+            "day_summaries": self.day_summaries,
+            "start_happiness": self.start_happiness,
+        }
+
+    def load_from_dict(self, data):
+        """Restore game state from a dictionary."""
+        self.player = Player("Don")
+        self.day = data["day"]
+        self.player.food = data["food"]
+        self.player.water = data["water"]
+        self.player.medicine = data["medicine"]
+        self.player.gold = data["gold"]
+        self.player.happiness = data["happiness"]
+        self.doculog = data["doculog"]
+        self.day_summaries = data["day_summaries"]
+        self.start_happiness = data["start_happiness"]
+        self.load_day(self.day)
 
     def apply_yesterday_consequences(self):
         if not self.day_summaries:
@@ -206,6 +235,17 @@ if st.session_state.screen in ["play", "evaluation", "upgrades", "new_day"]:
     st.sidebar.divider()
     st.sidebar.caption(f"📅 Day {game.day} of {Game.MAX_DAY}")
 
+    # SAVE BUTTON
+    st.sidebar.divider()
+    save_data = json.dumps(game.to_dict(), indent=2)
+    st.sidebar.download_button(
+        label="💾 Save Game",
+        data=save_data,
+        file_name=f"ddd_save_day{game.day}.json",
+        mime="application/json",
+        use_container_width=True
+    )
+
 
 # ============================================
 # TITLE SCREEN
@@ -228,6 +268,24 @@ if st.session_state.screen == "title":
         st.session_state.requests_this_day = 0
         st.session_state.screen = "play"
         st.rerun()
+
+    # LOAD GAME
+    st.divider()
+    with st.expander("📂 Load a Saved Game"):
+        uploaded = st.file_uploader("Upload a saved game file", type="json", label_visibility="collapsed")
+
+        if uploaded is not None:
+            try:
+                data = json.load(uploaded)
+                game.load_from_dict(data)
+                st.session_state.request_index = 0
+                st.session_state.requests_this_day = 0
+                st.session_state.day_consequences = []
+                st.session_state.screen = "play"
+                st.success(f"Loaded Day {data['day']} save!")
+                st.rerun()
+            except Exception as e:
+                st.error(f"Failed to load save: {e}")
 
 
 # ============================================
@@ -390,9 +448,6 @@ elif st.session_state.screen == "evaluation":
     st.divider()
     st.write("**Remember not to dwindle, Don.**")
 
-    # ============================================
-    # DOCU-LOG ACCESS FROM EVALUATION
-    # ============================================
     st.divider()
 
     with st.expander("📖 Open Don's Docu-log (Today's Entries)"):
@@ -412,9 +467,6 @@ elif st.session_state.screen == "evaluation":
         else:
             st.write("The Docu-log is empty.")
 
-    # ============================================
-    # CONTINUE
-    # ============================================
     if game.check_game_over():
         st.session_state.screen = "game_over"
         st.rerun()
