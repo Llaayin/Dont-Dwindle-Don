@@ -1,7 +1,7 @@
 # ============================================
 # Don't Dwindle, Don! (DDD) by Aaron Jared Lee
 # Resource Management Simulator
-# OOP Streamlit Version — v4 (Save/Load)
+# OOP Streamlit Version — v5 (Inheritance + 5 Days)
 # ============================================
 
 import streamlit as st
@@ -15,11 +15,24 @@ st.set_page_config(
 
 
 # ============================================
-# PLAYER CLASS
+# CHARACTER CLASS (Parent)
 # ============================================
-class Player:
-    def __init__(self, name):
+class Character:
+    """Base class for all characters in the game."""
+    def __init__(self, name, role):
         self.name = name
+        self.role = role
+
+    def introduce(self):
+        return f"I am {self.name}, the {self.role}."
+
+
+# ============================================
+# PLAYER CLASS (Inherits Character)
+# ============================================
+class Player(Character):
+    def __init__(self, name):
+        super().__init__(name, "Resource Manager")
         self.food = 50
         self.water = 50
         self.medicine = 20
@@ -28,25 +41,39 @@ class Player:
 
 
 # ============================================
-# NPC CLASS
+# NPC CLASS (Inherits Character)
 # ============================================
-class NPC:
-    def __init__(self, name, request, resource, amount, role, intro=None):
-        self.name = name
+class NPC(Character):
+    def __init__(self, name, request, resources, amounts, role, intro=None):
+        super().__init__(name, role)
         self.request = request
-        self.resource = resource
-        self.amount = amount
-        self.role = role
+        self.resources = resources
+        self.amounts = amounts
         self.intro = intro
         self.accepted = None
         self.status = "fine"
+
+    def react(self):
+        """Polymorphism — each dwarf reacts differently."""
+        if self.status == "rejected":
+            if self.role == "Miner":
+                return "glare"
+            elif self.role == "Farmer":
+                return "frown"
+            elif self.role == "Healer":
+                return "grim"
+            elif self.role == "Blacksmith":
+                return "disappointed"
+            else:
+                return "sad"
+        return "neutral"
 
 
 # ============================================
 # GAME CLASS
 # ============================================
 class Game:
-    MAX_DAY = 3
+    MAX_DAY = 5
 
     def __init__(self):
         self.player = None
@@ -62,38 +89,76 @@ class Game:
     def load_day(self, day):
         if day == 1:
             self.npcs = [
-                NPC("Brunhilda", "needs food for her kin, their stomachs growing louder by the day.", "food", 10, "Miner"),
-                NPC("Thrain", "needs water for the mushroom farm before the mushrooms dry up.", "water", 8, "Farmer"),
-                NPC("Durin", "needs medicine for the infirmary in order to tend to the sick and the wounded.", "medicine", 5, "Healer"),
+                NPC("Brunhilda", "needs food for her kin, their stomachs growing louder by the day.",
+                    ["food"], [10], "Miner"),
+                NPC("Thrain", "needs water for the mushroom farm before the mushrooms dry up.",
+                    ["water"], [8], "Farmer"),
+                NPC("Durin", "needs medicine for the infirmary in order to tend to the sick and the wounded.",
+                    ["medicine"], [5], "Healer"),
             ]
         elif day == 2:
             self.npcs = [
-                NPC("Brunhilda", "needs extra food for an extra refugee along with the rest of her kin.", "food", 12, "Miner"),
-                NPC("Thrain", "needs more water as the ground dries up faster than he expected, threatening the loss of crops.", "water", 10, "Farmer"),
-                NPC("Durin", "needs more medicine — the sick are multiplying.", "medicine", 8, "Healer"),
+                NPC("Brunhilda", "needs extra food for an extra refugee along with the rest of her kin.",
+                    ["food"], [12], "Miner"),
+                NPC("Thrain", "needs more water as the ground dries up faster than he expected, threatening the loss of crops.",
+                    ["water"], [10], "Farmer"),
+                NPC("Durin", "needs more medicine — the sick are multiplying.",
+                    ["medicine"], [8], "Healer"),
                 NPC(
                     "Grimwald",
                     "needs gold to repair the forges.",
-                    "gold",
-                    20,
+                    ["gold"],
+                    [20],
                     "Blacksmith",
                     intro="A stout dwarf with soot-stained hands steps forward. 'Name's Grimwald, yeah. I'm the head of the forge, the heart of our hold. Without repairs, we'll lose our edge. And without our edge, we'll lose everything.'"
                 ),
             ]
-        elif day >= 3:
+        elif day == 3:
             self.npcs = [
-                NPC("Brunhilda", "makes a request for more food as more hungry wails can be heard in the distance.", "food", 15, "Miner"),
-                NPC("Thrain", "needs water to moisten the soil for the mycelium to thrive.", "water", 12, "Farmer"),
-                NPC("Durin", "needs more medicine as a new fever spreads in the mines.", "medicine", 10, "Healer"),
-                NPC("Grimwald", "requests for more gold funding in order to reheat the forges.", "gold", 25, "Blacksmith"),
+                NPC("Brunhilda", "makes a request for more food as more hungry wails can be heard in the distance.",
+                    ["food"], [15], "Miner"),
+                NPC("Thrain", "needs water to moisten the soil for the mycelium to thrive.",
+                    ["water"], [12], "Farmer"),
+                NPC("Durin", "needs more medicine as a new fever spreads in the mines.",
+                    ["medicine"], [10], "Healer"),
+                NPC("Grimwald", "requests for more gold funding in order to reheat the forges.",
+                    ["gold"], [25], "Blacksmith"),
                 NPC(
                     "Sigrun",
                     "needs rare herbs for the hold's protective wards.",
-                    "medicine",
-                    6,
+                    ["medicine"],
+                    [6],
                     "Runekeeper",
-                    intro="An elderly dwarf in rune-stitched robes approaches. 'I be Sigrun,  guardian of ye wards. The old barrier runes over yonder weaken with each passing night. Without rare herbs to renew them, dark things will find their way in.'"
+                    intro="An elderly dwarf in rune-stitched robes approaches. 'I be Sigrun, guardian of ye wards. The old barrier runes over yonder weaken with each passing night. Without rare herbs to renew them, dark things will find their way in.'"
                 ),
+            ]
+        elif day == 4:
+            # Day 4: 5 dwarves, each demands 2 resources at half of Day 3 amounts
+            self.npcs = [
+                NPC("Brunhilda", "needs food and water — the tunnels are cold and her kin are both hungry and thirsty.",
+                    ["food", "water"], [8, 6], "Miner"),
+                NPC("Thrain", "needs water and food — his farmhands are hungry and the soil is dry.",
+                    ["water", "food"], [6, 5], "Farmer"),
+                NPC("Durin", "needs medicine and water — the wounded need tending and the wells are low.",
+                    ["medicine", "water"], [5, 6], "Healer"),
+                NPC("Grimwald", "needs gold and food — the forge crew is hungry and the repairs remain unfinished.",
+                    ["gold", "food"], [13, 6], "Blacksmith"),
+                NPC("Sigrun", "needs medicine and gold — the wards require both herbs and offerings.",
+                    ["medicine", "gold"], [3, 10], "Runekeeper"),
+            ]
+        elif day >= 5:
+            # Day 5: 5 dwarves, 2 resources each (slightly higher than Day 4)
+            self.npcs = [
+                NPC("Brunhilda", "needs food and water — the hold grows desperate.",
+                    ["food", "water"], [10, 8], "Miner"),
+                NPC("Thrain", "needs water and food — the farm is failing.",
+                    ["water", "food"], [8, 6], "Farmer"),
+                NPC("Durin", "needs medicine and water — illness spreads and the wells are dry.",
+                    ["medicine", "water"], [6, 8], "Healer"),
+                NPC("Grimwald", "needs gold and food — the forges need tending and the crew must be fed.",
+                    ["gold", "food"], [15, 8], "Blacksmith"),
+                NPC("Sigrun", "needs medicine and gold — the wards fade faster than she can renew them.",
+                    ["medicine", "gold"], [4, 12], "Runekeeper"),
             ]
 
     def new_game(self):
@@ -104,7 +169,6 @@ class Game:
         self.load_day(1)
 
     def to_dict(self):
-        """Convert game state to a dictionary for saving."""
         return {
             "day": self.day,
             "food": self.player.food,
@@ -118,7 +182,6 @@ class Game:
         }
 
     def load_from_dict(self, data):
-        """Restore game state from a dictionary."""
         self.player = Player("Don")
         self.day = data["day"]
         self.player.food = data["food"]
@@ -154,40 +217,73 @@ class Game:
 
         return consequences
 
+    def check_request(self, npc):
+        """Return (can_afford, missing_list)."""
+        missing = []
+        for resource, amount in zip(npc.resources, npc.amounts):
+            if getattr(self.player, resource) < amount:
+                missing.append(f"{amount} {resource}")
+        return len(missing) == 0, missing
+
+    def fulfill_request(self, npc):
+        """Deduct resources and increase morale."""
+        for resource, amount in zip(npc.resources, npc.amounts):
+            current = getattr(self.player, resource)
+            setattr(self.player, resource, current - amount)
+        self.player.happiness += 5
+        npc.accepted = True
+        npc.status = "fine"
+
     def report_dwarf(self, npc):
-        if npc.accepted is True:
-            if npc.resource == "food":
-                return f"✅ {npc.name} the {npc.role}: Food is restocked. {npc.name}'s kin will get to eat tonight."
-            elif npc.resource == "water":
-                return f"✅ {npc.name} the {npc.role}: Water is restocked. The crops have been moistened and are able to grow a little more."
-            elif npc.resource == "medicine":
-                return f"✅ {npc.name} the {npc.role}: Medicine is restocked. {npc.name} breathes a sigh of relief as the injured workers' wounds can finally be taken care of."
-            elif npc.resource == "gold":
-                if npc.name == "Grimwald":
-                    return f"✅ Grimwald the Blacksmith: The gold is handed over. 'My thanks, Don. I'll have the forges roaring by morning.'"
-                return f"✅ {npc.name} the {npc.role}: Gold received."
-        elif npc.status == "denied":
-            if npc.resource == "food":
-                return f"⚠️ {npc.name} the {npc.role}: The growls of their stomach are audible. Their kin and the rest of the hold will soon follow..."
-            elif npc.resource == "water":
-                return f"⚠️ {npc.name} the {npc.role}: A drought begins to fester among the hold. The crops are withering..."
-            elif npc.resource == "medicine":
-                return f"⚠️ {npc.name} the {npc.role}: The conditions of the sick workers worsen. The lives of your fellow-men may start dwindling..."
-            elif npc.resource == "gold":
-                if npc.name == "Grimwald":
-                    return f"⚠️ Grimwald the Blacksmith: He stares at the empty coffer. 'No gold? Then no repairs. Don't let the forges grow too cold, Don.'"
-                return f"⚠️ {npc.name} the {npc.role}: The forges remain broken."
-        elif npc.status == "rejected":
-            if npc.resource == "food":
-                return f"❌ {npc.name} the {npc.role}: They glare at you with resentment. They will remember you being the reason their kin will starve."
-            elif npc.resource == "water":
-                return f"❌ {npc.name} the {npc.role}: {npc.name} flashes a visible frown and leaves."
-            elif npc.resource == "medicine":
-                return f"❌ {npc.name} the {npc.role}: A grim shadow looms over {npc.name}'s face."
-            elif npc.resource == "gold":
-                if npc.name == "Grimwald":
-                    return f"❌ Grimwald the Blacksmith: He shakes his head slowly. 'So that's how it be then, huh? I'll remember this, Don.'"
-                return f"❌ {npc.name} the {npc.role}: They shake their head in disappointment."
+        # Single resource (Days 1–3)
+        if len(npc.resources) == 1:
+            resource = npc.resources[0]
+            if npc.accepted is True:
+                if resource == "food":
+                    return f"✅ {npc.name} the {npc.role}: Food is restocked. {npc.name}'s kin will get to eat tonight."
+                elif resource == "water":
+                    return f"✅ {npc.name} the {npc.role}: Water is restocked. The crops have been moistened and are able to grow a little more."
+                elif resource == "medicine":
+                    return f"✅ {npc.name} the {npc.role}: Medicine is restocked. {npc.name} breathes a sigh of relief as the injured workers' wounds can finally be taken care of."
+                elif resource == "gold":
+                    if npc.name == "Grimwald":
+                        return f"✅ Grimwald the Blacksmith: The gold is handed over. 'My thanks, Don. I'll have the forges roaring by morning.'"
+                    return f"✅ {npc.name} the {npc.role}: Gold received."
+            elif npc.status == "denied":
+                if resource == "food":
+                    return f"⚠️ {npc.name} the {npc.role}: The growls of their stomach are audible. Their kin and the rest of the hold will soon follow..."
+                elif resource == "water":
+                    return f"⚠️ {npc.name} the {npc.role}: A drought begins to fester among the hold. The crops are withering..."
+                elif resource == "medicine":
+                    return f"⚠️ {npc.name} the {npc.role}: The conditions of the sick workers worsen. The lives of your fellow-men may start dwindling..."
+                elif resource == "gold":
+                    if npc.name == "Grimwald":
+                        return f"⚠️ Grimwald the Blacksmith: He stares at the empty coffer. 'No gold? Then no repairs. Don't let the forges grow too cold, Don.'"
+                    return f"⚠️ {npc.name} the {npc.role}: The forges remain broken."
+            elif npc.status == "rejected":
+                if resource == "food":
+                    return f"❌ {npc.name} the {npc.role}: They glare at you with resentment. They will remember you being the reason their kin will starve."
+                elif resource == "water":
+                    return f"❌ {npc.name} the {npc.role}: {npc.name} flashes a visible frown and leaves."
+                elif resource == "medicine":
+                    return f"❌ {npc.name} the {npc.role}: A grim shadow looms over {npc.name}'s face."
+                elif resource == "gold":
+                    if npc.name == "Grimwald":
+                        return f"❌ Grimwald the Blacksmith: He shakes his head slowly. 'So that's how it be then, huh? I'll remember this, Don.'"
+                    return f"❌ {npc.name} the {npc.role}: They shake their head in disappointment."
+
+        # Multiple resources (Days 4–5)
+        else:
+            resource_str = " and ".join(
+                f"{amount} {resource}" for resource, amount in zip(npc.resources, npc.amounts)
+            )
+            if npc.accepted is True:
+                return f"✅ {npc.name} the {npc.role}: Received {resource_str}. They nod with gratitude."
+            elif npc.status == "denied":
+                return f"⚠️ {npc.name} the {npc.role}: Requested {resource_str}, but the hold couldn't spare it."
+            elif npc.status == "rejected":
+                return f"❌ {npc.name} the {npc.role}: Request for {resource_str} was rejected. They leave with a heavy heart."
+
         return f"— {npc.name} made no request today."
 
     def calculate_income(self):
@@ -235,7 +331,6 @@ if st.session_state.screen in ["play", "evaluation", "upgrades", "new_day"]:
     st.sidebar.divider()
     st.sidebar.caption(f"📅 Day {game.day} of {Game.MAX_DAY}")
 
-    # SAVE BUTTON
     st.sidebar.divider()
     save_data = json.dumps(game.to_dict(), indent=2)
     st.sidebar.download_button(
@@ -269,11 +364,9 @@ if st.session_state.screen == "title":
         st.session_state.screen = "play"
         st.rerun()
 
-    # LOAD GAME
     st.divider()
     with st.expander("📂 Load a Saved Game"):
         uploaded = st.file_uploader("Upload a saved game file", type="json", label_visibility="collapsed")
-
         if uploaded is not None:
             try:
                 data = json.load(uploaded)
@@ -339,20 +432,20 @@ elif st.session_state.screen == "play":
         st.caption(f"*{npc.role}*")
     with col2:
         st.markdown(f"**{npc.name}** {npc.request}")
-        st.markdown(f"**Requested:** {npc.amount} {npc.resource}")
+        st.markdown("**Requested:**")
+        for resource, amount in zip(npc.resources, npc.amounts):
+            st.markdown(f"- {amount} {resource}")
 
     st.divider()
+
+    can_afford, missing = game.check_request(npc)
 
     col_a, col_b = st.columns(2)
 
     with col_a:
         if st.button("✅ ACCEPT", use_container_width=True, type="primary"):
-            current = getattr(game.player, npc.resource)
-            if current >= npc.amount:
-                setattr(game.player, npc.resource, current - npc.amount)
-                game.player.happiness += 5
-                npc.accepted = True
-                npc.status = "fine"
+            if can_afford:
+                game.fulfill_request(npc)
             else:
                 npc.accepted = False
                 npc.status = "denied"
@@ -453,7 +546,6 @@ elif st.session_state.screen == "evaluation":
     with st.expander("📖 Open Don's Docu-log (Today's Entries)"):
         today_start = max(0, len(game.doculog) - st.session_state.requests_this_day)
         todays_entries = game.doculog[today_start:]
-
         if todays_entries:
             for entry in todays_entries:
                 st.write(entry)
