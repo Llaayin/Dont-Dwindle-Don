@@ -388,6 +388,21 @@ elif st.session_state.screen == "new_day":
     st.title(f"🌅 Day {game.day} Begins")
     st.divider()
 
+    # SPECIAL: Cave flood warning before Day 4
+    if game.day == 4:
+        st.error("⚠️ **CAVE FLOOD WARNING** ⚠️")
+        st.warning(
+            "Overnight, floodwater from the upper tunnels broke through an old wall. "
+            "The lower mines are flooded; supplies are scattered, and the "
+            "dwarves are stretched thinner than ever.\n\n"
+            "**From here on, things will only get worse, Don.** "
+            "The requests will grow heavier. The resources will grow scarcer. "
+            "Every decision from this day forward could mean the difference between "
+            "the hold's survival and its fall."
+            "ALways remember: Don't Dwindle now, Don. "
+        )
+        st.divider()
+
     if st.session_state.day_consequences:
         st.subheader("📋 Consequences from Yesterday")
         for c in st.session_state.day_consequences:
