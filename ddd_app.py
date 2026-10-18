@@ -43,7 +43,7 @@ def clickable_image(image_path, button_text="Click Me", use_container_width=True
         }}
     </style>
     <form action="" method="get" style="margin: 0; padding: 0;">
-        <button class="image-button" type="submit" name="{button_text}">
+        <button class="image-button" type="submit" name="{button_text}" style="width: fit-content; margin: 0 auto; display: block;">
             <img src="data:image/png;base64,{img_base64}" alt="{button_text}">
         </button>
     </form>
