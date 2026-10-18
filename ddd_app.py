@@ -533,7 +533,7 @@ with col2:
 
 st.divider()
 
-    can_afford, missing = game.check_request(npc)
+can_afford, missing = game.check_request(npc)
 
     col_a, col_b = st.columns(2)
 
