@@ -1,12 +1,68 @@
 # ============================================
 # Don't Dwindle, Don! (DDD) by Aaron Jared Lee
 # Resource Management Simulator
-# OOP Streamlit Version — v6
+# OOP Streamlit Version — v7
 # ============================================
 
 import streamlit as st
 import json
+import base64
+import os
 
+# --- FUNCTION TO MAKE IMAGE CLICKABLE ---
+def img_to_bytes(img_path):
+    if not os.path.exists(img_path):
+        st.error(f"Error: Image not found at {img_path}")
+        return ""
+    with open(img_path, "rb") as f:
+        return base64.b64encode(f.read()).decode()
+
+def clickable_image(image_path, button_text="Click Me", use_container_width=True):
+    img_base64 = img_to_bytes(image_path)
+    if not img_base64:
+        return False
+        
+    html = f'''
+    <style>
+        .image-button {{
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }}
+        .image-button img {{
+            width: 100%;
+            max-width: 800px;
+            transition: transform 0.1s;
+        }}
+        .image-button img:hover {{
+            transform: scale(1.05);
+        }}
+    </style>
+    <form action="" method="get" style="margin: 0; padding: 0;">
+        <button class="image-button" type="submit" name="{button_text}" style="width: fit-content; margin: 0 auto; display: block;">
+            <img src="data:image/png;base64,{img_base64}" alt="{button_text}">
+        </button>
+    </form>
+    '''
+    
+    st.markdown(html, unsafe_allow_html=True)
+    
+    query_params = st.query_params
+    if button_text in query_params:
+        st.query_params.clear() 
+        return True
+    return False
+# ---------------------------------------
+
+st.set_page_config(
+    page_title="Don't Dwindle, Don!",
+    page_icon="⛏️",
+    layout="wide"
+)
 st.set_page_config(
     page_title="Don't Dwindle, Don!",
     page_icon="⛏️",
@@ -358,17 +414,15 @@ if st.session_state.screen in ["play", "evaluation", "upgrades", "new_day"]:
 # TITLE SCREEN
 # ============================================
 if st.session_state.screen == "title":
-    st.title("⛏️ DON'T DWINDLE, DON!")
-    st.subheader("A Dwarven Resource Management Game")
-    st.divider()
-    st.write("You are **Don**, the Resource Manager of the Hold.")
-    st.write("Your fellow dwarves will come to you with all kinds of requests — food, water, medicine, gold.")
-    st.write("Every choice you make affects the hold's morale and survival.")
+    # Center the image using columns
+    _, img_col, _ = st.columns([1, 3, 1])
+    
+    with img_col:
+        st.image("assets/title_screen.png", use_container_width=True)
+        
     st.write("")
-    st.write("**And as always Don, remember our Hold's motto: Don't Dwindle!**")
-    st.divider()
-
-    if st.button("▶️ BEGIN MANAGEMENT", type="primary", use_container_width=True):
+    
+    if clickable_image("assets/start_button.png", button_text="BEGIN_MANAGEMENT"):
         game.new_game()
         st.session_state.request_index = 0
         st.session_state.day_consequences = []
@@ -377,20 +431,24 @@ if st.session_state.screen == "title":
         st.rerun()
 
     st.divider()
-    with st.expander("📂 Load a Saved Game"):
-        uploaded = st.file_uploader("Upload a saved game file", type="json", label_visibility="collapsed")
-        if uploaded is not None:
-            try:
-                data = json.load(uploaded)
-                game.load_from_dict(data)
-                st.session_state.request_index = 0
-                st.session_state.requests_this_day = 0
-                st.session_state.day_consequences = []
-                st.session_state.screen = "play"
-                st.success(f"Loaded Day {data['day']} save!")
-                st.rerun()
-            except Exception as e:
-                st.error(f"Failed to load save: {e}")
+
+    _, load_col, _ = st.columns([1, 2, 1])
+    with load_col:
+        
+        with st.expander("📂 Load a Saved Game"):
+                uploaded = st.file_uploader("Upload a saved game file", type="json", label_visibility="collapsed")
+                if uploaded is not None:
+                    try:
+                        data = json.load(uploaded)
+                        game.load_from_dict(data)
+                        st.session_state.request_index = 0
+                        st.session_state.requests_this_day = 0
+                        st.session_state.day_consequences = []
+                        st.session_state.screen = "play"
+                        st.success(f"Loaded Day {data['day']} save!")
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Failed to load save: {e}")
 
 
 # ============================================
@@ -454,8 +512,19 @@ elif st.session_state.screen == "play":
 
     col1, col2 = st.columns([1, 2])
     with col1:
+        portraits = {
+            "Brunhilda": "assets/Brunhilde.png",
+            "Thrain": "assets/Thrain.png",
+            "Durin": "assets/Durin.png",
+            "Grimwald": "assets/Grimwald.png",
+            "Sigrun": "assets/Sigrun.png"
+        }
+        if npc.name in portraits:
+            st.image(portraits[npc.name], use_container_width=True)
+            
         st.markdown(f"### 🧔 {npc.name}")
         st.caption(f"*{npc.role}*")
+        
     with col2:
         st.markdown(f"**{npc.name}** {npc.request}")
         st.markdown("**Requested:**")
@@ -497,11 +566,11 @@ elif st.session_state.screen == "play":
             st.session_state.requests_this_day += 1
             st.rerun()
 
-    if game.doculog:
-        st.divider()
-        st.subheader("📖 Don's Docu-log")
-        for entry in game.doculog[-5:]:
-            st.write(entry)
+        if game.doculog:
+            st.divider()
+            with st.expander("📖 Open Don's Docu-log (Today's Entries)", expanded=True):
+                for entry in game.doculog[-5:]:
+                    st.write(entry)
 
 
 # ============================================
@@ -634,10 +703,18 @@ elif st.session_state.screen == "evaluation":
 # ============================================
 elif st.session_state.screen == "upgrades":
     st.title("🔨 FORGE & MARKET")
+    
+    shop_col1, shop_col2 = st.columns([1, 3])
+    with shop_col1:
+        st.image("assets/Shopkeep.png", use_container_width=True)
+    with shop_col2:
+        st.write("### 🧔 The Shopkeeper")
+        st.write("*'Take a gander at my wares, Don. I have some good prices for a hold in need.'*")
+        
     st.divider()
 
     st.markdown(f"### Gold: 💰 {game.player.gold}")
-    st.divider()
+
 
     col1, col2, col3 = st.columns(3)
 
