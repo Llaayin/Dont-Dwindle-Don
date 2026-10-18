@@ -415,13 +415,12 @@ if st.session_state.screen in ["play", "evaluation", "upgrades", "new_day"]:
 # ============================================
 if st.session_state.screen == "title":
     # Center the image using columns
-    img_col1, img_col2, img_col3 = st.columns([1, 2, 1])
+    _, img_col, _ = st.columns([1, 3, 1])
     
-    with img_col2:
-        # Make sure the filename matches exactly what you uploaded to the assets folder
+    with img_col:
         st.image("assets/title_screen.png", use_container_width=True)
         
-    st.write("") 
+    st.write("")
     
     if clickable_image("assets/start_button.png", button_text="BEGIN_MANAGEMENT"):
         game.new_game()
