@@ -525,7 +525,7 @@ elif st.session_state.screen == "play":
         
 st.markdown(f"### 🧔 {npc.name}")
 st.caption(f"*{npc.role}*")
-    with col2:
+with col2:
         st.markdown(f"**{npc.name}** {npc.request}")
         st.markdown("**Requested:**")
         for resource, amount in zip(npc.resources, npc.amounts):
