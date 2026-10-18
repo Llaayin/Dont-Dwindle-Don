@@ -510,30 +510,30 @@ elif st.session_state.screen == "play":
         st.info(npc.intro)
         st.divider()
 
-    col1, col2 = st.columns([1, 2])
+        col1, col2 = st.columns([1, 2])
     with col1:
-
-     portraits = {
-        "Brunhilda": "assets/Brunhilde.png",
-        "Thrain": "assets/Thrain.png",
-        "Durin": "assets/Durin.png",
-        "Grimwald": "assets/Grimwald.png",
-        "Sigrun": "assets/Sigrun.png"
-    }
-    if npc.name in portraits:
-        st.image(portraits[npc.name], use_container_width=True)
+        portraits = {
+            "Brunhilda": "assets/Brunhilde.png",
+            "Thrain": "assets/Thrain.png",
+            "Durin": "assets/Durin.png",
+            "Grimwald": "assets/Grimwald.png",
+            "Sigrun": "assets/Sigrun.png"
+        }
+        if npc.name in portraits:
+            st.image(portraits[npc.name], use_container_width=True)
+            
+        st.markdown(f"### 🧔 {npc.name}")
+        st.caption(f"*{npc.role}*")
         
-st.markdown(f"### 🧔 {npc.name}")
-st.caption(f"*{npc.role}*")
-with col2:
+    with col2:
         st.markdown(f"**{npc.name}** {npc.request}")
         st.markdown("**Requested:**")
         for resource, amount in zip(npc.resources, npc.amounts):
             st.markdown(f"- {amount} {resource}")
 
-st.divider()
+    st.divider()
 
-can_afford, missing = game.check_request(npc)
+    can_afford, missing = game.check_request(npc)
 
     col_a, col_b = st.columns(2)
 
