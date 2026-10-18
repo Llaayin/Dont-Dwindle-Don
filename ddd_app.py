@@ -706,10 +706,10 @@ elif st.session_state.screen == "upgrades":
     
     shop_col1, shop_col2 = st.columns([1, 3])
     with shop_col1:
-        st.image("assets/ShopKeep.png", use_container_width=True)
+        st.image("assets/Shopkeep.png", use_container_width=True)
     with shop_col2:
         st.write("### 🧔 The Shopkeeper")
-        st.write("*'Take a look at me wares, Don. Good prices for a hold in need.'*")
+        st.write("*'Take a gander at my wares, Don. I have some good prices for a hold in need.'*")
         
     st.divider()
 
