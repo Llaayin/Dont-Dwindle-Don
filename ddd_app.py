@@ -358,16 +358,15 @@ if st.session_state.screen in ["play", "evaluation", "upgrades", "new_day"]:
 # TITLE SCREEN
 # ============================================
 if st.session_state.screen == "title":
-    st.title("⛏️ DON'T DWINDLE, DON!")
-    st.subheader("A Dwarven Resource Management Game")
-    st.divider()
-    st.write("You are **Don**, the Resource Manager of the Hold.")
-    st.write("Your fellow dwarves will come to you with all kinds of requests — food, water, medicine, gold.")
-    st.write("Every choice you make affects the hold's morale and survival.")
-    st.write("")
-    st.write("**And as always Don, remember our Hold's motto: Don't Dwindle!**")
-    st.divider()
-
+    # Center the image using columns
+    img_col1, img_col2, img_col3 = st.columns([1, 2, 1])
+    
+    with img_col2:
+        # Make sure the filename matches exactly what you uploaded to the assets folder
+        st.image("assets/title_screen.png", use_container_width=True)
+        
+    st.write("") 
+    
     if st.button("▶️ BEGIN MANAGEMENT", type="primary", use_container_width=True):
         game.new_game()
         st.session_state.request_index = 0
