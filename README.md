@@ -1,5 +1,3 @@
-# Dont-Dwindle-Don
-
 **Don't Dwindle, Don!** is a text-based, resource-management simulator built in Python using Object-Oriented Programming (OOP) and Streamlit. You play as Don, the Resource Manager of a dwarven hold. Every day, dwarves approach you with requests for food, water, medicine, and gold. You must decide whether to accept, deny, or reject these requests. Every choice impacts the hold's morale and survival, directly tying into SDG 12 (Responsible Consumption and Production), SDG 2 (Zero Hunger), and SDG 6 (Clean Water and Sanitation).
 
 **Python Version:** 3.14
@@ -18,8 +16,8 @@ To run this project locally:
    ```bash
    pip install -r requirements.txt
 
-Streamlit:
-streamlit run ddd_app.py
+3. Run the Streamlit app:
+   streamlit run ddd_app.py
 
 Technical Documentation:
  **[Read the Full IEEE Project Paper Here](DDD_IEEE_Overleaf%20Document.pdf)**
