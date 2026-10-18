@@ -22,9 +22,11 @@ Streamlit:
 streamlit run ddd_app.py
 
 Technical Documentation:
-
-
-
+ **[Read the Full IEEE Project Paper Here](DDD_IEEE_Overleaf%20Document.pdf)**
+ **[Feature 1: Don's DocuLog](https://youtu.be/9N6tSGagZNI)
+ **[Feature 2: JSON Save/Load System](https://youtu.be/5NuMJgFlZV4)
+ **[Feature 3: Butterfly Effect Consequence System](https://youtu.be/D-HWiO_7jls)
+ 
 AI Declaration
 This project was developed with the assistance of AI (specifically, a large language model). The AI was used for:
 
