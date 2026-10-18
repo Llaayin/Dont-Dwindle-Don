@@ -1,7 +1,7 @@
 # ============================================
 # Don't Dwindle, Don! (DDD) by Aaron Jared Lee
 # Resource Management Simulator
-# OOP Streamlit Version — v6
+# OOP Streamlit Version — v7
 # ============================================
 
 import streamlit as st
