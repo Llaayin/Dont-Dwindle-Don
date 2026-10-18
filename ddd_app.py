@@ -531,7 +531,7 @@ with col2:
         for resource, amount in zip(npc.resources, npc.amounts):
             st.markdown(f"- {amount} {resource}")
 
-    st.divider()
+st.divider()
 
     can_afford, missing = game.check_request(npc)
 
