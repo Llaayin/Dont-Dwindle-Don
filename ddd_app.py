@@ -510,7 +510,7 @@ elif st.session_state.screen == "play":
         st.info(npc.intro)
         st.divider()
 
-        col1, col2 = st.columns([1, 2])
+    col1, col2 = st.columns([1, 2])
     with col1:
         portraits = {
             "Brunhilda": "assets/Brunhilde.png",
