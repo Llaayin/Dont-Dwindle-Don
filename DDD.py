@@ -403,13 +403,14 @@ elif st.session_state.screen == "new_day":
     if game.day == 4:
         st.error("⚠️ **CAVE FLOOD WARNING** ⚠️")
         st.warning(
-            "Overnight, meltwater from the upper tunnels broke through an old wall. "
-            "The lower mines are flooded. The hold's supplies are scattered, and the "
+            "Overnight, flood-water from the upper tunnels broke through an old wall. "
+            "The lower mines have become flooded; The hold's supplies are scattered, and the "
             "dwarves are stretched thinner than ever.\n\n"
-            "**From here on, things will only get worse, Don.** "
+            "**From here on out, things will only get worse, Don.** "
             "The requests will grow heavier. The resources will grow scarcer. "
             "Every decision from this day forward could mean the difference between "
             "the hold's survival and its fall."
+            "And as always, Don, Don't Dwindle."
         )
         st.divider()
 
