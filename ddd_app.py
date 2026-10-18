@@ -704,7 +704,7 @@ elif st.session_state.screen == "evaluation":
 elif st.session_state.screen == "upgrades":
     st.title("🔨 FORGE & MARKET")
     
-        shop_col1, shop_col2 = st.columns([1, 3])
+    shop_col1, shop_col2 = st.columns([1, 3])
     with shop_col1:
         st.image("assets/ShopKeep.png", use_container_width=True)
     with shop_col2:
