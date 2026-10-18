@@ -423,7 +423,7 @@ if st.session_state.screen == "title":
         
     st.write("") 
     
-    if st.button("▶️ BEGIN MANAGEMENT", type="primary", use_container_width=True):
+     if clickable_image("assets/start_button.png", button_text="BEGIN_MANAGEMENT"):
         game.new_game()
         st.session_state.request_index = 0
         st.session_state.day_consequences = []
