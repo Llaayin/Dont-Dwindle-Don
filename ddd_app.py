@@ -703,10 +703,18 @@ elif st.session_state.screen == "evaluation":
 # ============================================
 elif st.session_state.screen == "upgrades":
     st.title("🔨 FORGE & MARKET")
+    
+        shop_col1, shop_col2 = st.columns([1, 3])
+    with shop_col1:
+        st.image("assets/ShopKeep.png", use_container_width=True)
+    with shop_col2:
+        st.write("### 🧔 The Shopkeeper")
+        st.write("*'Take a look at me wares, Don. Good prices for a hold in need.'*")
+        
     st.divider()
 
     st.markdown(f"### Gold: 💰 {game.player.gold}")
-    st.divider()
+
 
     col1, col2, col3 = st.columns(3)
 
