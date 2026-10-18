@@ -514,7 +514,7 @@ elif st.session_state.screen == "play":
     with col1:
 
      portraits = {
-        "Brunhilda": "assets/Brunhilda.png",
+        "Brunhilda": "assets/Brunhilde.png",
         "Thrain": "assets/Thrain.png",
         "Durin": "assets/Durin.png",
         "Grimwald": "assets/Grimwald.png",
@@ -523,8 +523,8 @@ elif st.session_state.screen == "play":
     if npc.name in portraits:
         st.image(portraits[npc.name], use_container_width=True)
         
-    st.markdown(f"### 🧔 {npc.name}")
-    st.caption(f"*{npc.role}*")
+st.markdown(f"### 🧔 {npc.name}")
+st.caption(f"*{npc.role}*")
     with col2:
         st.markdown(f"**{npc.name}** {npc.request}")
         st.markdown("**Requested:**")
