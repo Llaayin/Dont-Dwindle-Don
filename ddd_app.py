@@ -431,20 +431,24 @@ if st.session_state.screen == "title":
         st.rerun()
 
     st.divider()
-    with st.expander("📂 Load a Saved Game"):
-        uploaded = st.file_uploader("Upload a saved game file", type="json", label_visibility="collapsed")
-        if uploaded is not None:
-            try:
-                data = json.load(uploaded)
-                game.load_from_dict(data)
-                st.session_state.request_index = 0
-                st.session_state.requests_this_day = 0
-                st.session_state.day_consequences = []
-                st.session_state.screen = "play"
-                st.success(f"Loaded Day {data['day']} save!")
-                st.rerun()
-            except Exception as e:
-                st.error(f"Failed to load save: {e}")
+
+    _, load_col, _ = st.columns([1, 2, 1])
+    with load_col:
+        
+        with st.expander("📂 Load a Saved Game"):
+                uploaded = st.file_uploader("Upload a saved game file", type="json", label_visibility="collapsed")
+                if uploaded is not None:
+                    try:
+                        data = json.load(uploaded)
+                        game.load_from_dict(data)
+                        st.session_state.request_index = 0
+                        st.session_state.requests_this_day = 0
+                        st.session_state.day_consequences = []
+                        st.session_state.screen = "play"
+                        st.success(f"Loaded Day {data['day']} save!")
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Failed to load save: {e}")
 
 
 # ============================================
