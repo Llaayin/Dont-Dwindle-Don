@@ -6,7 +6,63 @@
 
 import streamlit as st
 import json
+import base64
+import os
 
+# --- FUNCTION TO MAKE IMAGE CLICKABLE ---
+def img_to_bytes(img_path):
+    if not os.path.exists(img_path):
+        st.error(f"Error: Image not found at {img_path}")
+        return ""
+    with open(img_path, "rb") as f:
+        return base64.b64encode(f.read()).decode()
+
+def clickable_image(image_path, button_text="Click Me", use_container_width=True):
+    img_base64 = img_to_bytes(image_path)
+    if not img_base64:
+        return False
+        
+    html = f'''
+    <style>
+        .image-button {{
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }}
+        .image-button img {{
+            width: 100%;
+            max-width: 800px;
+            transition: transform 0.1s;
+        }}
+        .image-button img:hover {{
+            transform: scale(1.05);
+        }}
+    </style>
+    <form action="" method="get" style="margin: 0; padding: 0;">
+        <button class="image-button" type="submit" name="{button_text}">
+            <img src="data:image/png;base64,{img_base64}" alt="{button_text}">
+        </button>
+    </form>
+    '''
+    
+    st.markdown(html, unsafe_allow_html=True)
+    
+    query_params = st.query_params
+    if button_text in query_params:
+        st.query_params.clear() 
+        return True
+    return False
+# ---------------------------------------
+
+st.set_page_config(
+    page_title="Don't Dwindle, Don!",
+    page_icon="⛏️",
+    layout="wide"
+)
 st.set_page_config(
     page_title="Don't Dwindle, Don!",
     page_icon="⛏️",
