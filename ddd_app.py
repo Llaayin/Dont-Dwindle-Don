@@ -567,8 +567,8 @@ elif st.session_state.screen == "play":
             st.rerun()
 
     if game.doculog:
-        st.divider()
-        st.subheader("📖 Don's Docu-log")
+    st.divider()
+    with st.expander("📖 Open Don's Docu-log (Today's Entries)", expanded=True):
         for entry in game.doculog[-5:]:
             st.write(entry)
 
