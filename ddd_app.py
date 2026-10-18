@@ -9,7 +9,7 @@ import json
 import base64
 import os
 
-# --- FUNCTION TO MAKE IMAGE CLICKABLE ---
+
 def img_to_bytes(img_path):
     if not os.path.exists(img_path):
         st.error(f"Error: Image not found at {img_path}")
@@ -414,7 +414,7 @@ if st.session_state.screen in ["play", "evaluation", "upgrades", "new_day"]:
 # TITLE SCREEN
 # ============================================
 if st.session_state.screen == "title":
-    # Center the image using columns
+    
     _, img_col, _ = st.columns([1, 3, 1])
     
     with img_col:
