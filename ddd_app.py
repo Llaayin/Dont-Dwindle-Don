@@ -273,7 +273,7 @@ class Game:
             self.player.happiness -= 5
             consequences.append("😟 The hold's low morale lingers. Some dwarves woke up angry (−5 morale).")
         elif last["morale_end"] >= 80:
-            self.player.happiness += 3
+            self.player.happiness = min(100, self.player.happiness + 3)
             consequences.append("😊 The hold's good spirits continue. Your fellow dwarves greet you with warmth (+3 morale).")
 
         if last["food_end"] < 15:
