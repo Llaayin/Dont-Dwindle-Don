@@ -298,7 +298,7 @@ class Game:
             current = getattr(self.player, resource)
             setattr(self.player, resource, current - amount)
         morale_change = self.get_morale_accept()
-        self.player.happiness += morale_change
+        self.player.happiness = min(100, self.player.happiness + morale_change)
         npc.accepted = True
         npc.status = "fine"
         return morale_change
