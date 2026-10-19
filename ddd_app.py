@@ -761,7 +761,10 @@ elif st.session_state.screen == "evaluation":
     with st.expander("📚 View Full Docu-log (All Days)"):
         if game.doculog:
             for entry in game.doculog:
-                st.write(entry)
+                if entry.startswith("##"):
+                    st.subheader(entry.replace("## ", ""))
+                else:
+                    st.write(entry)
         else:
             st.write("The Docu-log is empty.")
 
