@@ -390,6 +390,7 @@ if "game" not in st.session_state:
     st.session_state.request_index = 0
     st.session_state.day_consequences = []
     st.session_state.requests_this_day = 0
+    st.session_state.rejects_this_day = 0
 
 game = st.session_state.game
 
@@ -435,6 +436,7 @@ if st.session_state.screen == "title":
         st.session_state.request_index = 0
         st.session_state.day_consequences = []
         st.session_state.requests_this_day = 0
+        st.session_state.rejects_this_day = 0
         st.session_state.screen = "play"
         st.rerun()
 
@@ -495,6 +497,7 @@ elif st.session_state.screen == "new_day":
         game.start_happiness = game.player.happiness
         st.session_state.request_index = 0
         st.session_state.requests_this_day = 0
+        st.session_state.rejects_this_day = 0
         st.session_state.screen = "play"
         st.rerun()
 
