@@ -166,7 +166,7 @@ class Game:
                     ["food"], [15], "Miner"),
                 NPC("Thrain", "needs water to moisten the soil for the mycelium to thrive.",
                     ["water"], [12], "Farmer"),
-                NPC("Durin", "needs more medicine as a new fever spreads in the mines.",
+                NPC("Durin", "needs more medicine as more injured dwarves are checked into the infirmary.",
                     ["medicine"], [10], "Healer"),
                 NPC("Grimwald", "requests for more gold funding in order to purchase more tinder wood and coal for the forges' furnaces.",
                     ["gold"], [25], "Blacksmith"),
@@ -183,30 +183,30 @@ class Game:
             self.npcs = [
                 NPC("Brunhilda", "needs food and water for they require the energy for the long excavation job of carving out a new hole to avoid the flooded routes.",
                     ["food", "water"], [8, 6], "Miner"),
-                NPC("Thrain", "needs water and food — his farmhands are hungry and the soil is dry.",
-                    ["water", "food"], [6, 5], "Farmer"),
-                NPC("Durin", "needs medicine and water — the wounded need tending and the wells are low.",
+                NPC("Thrain", "needs food and water as his farmhands are hungry and the soil is dry.",
+                    ["food", "water"], [6, 5], "Farmer"),
+                NPC("Durin", "needs medicine and water; the sick are slowly recoveering but they need more of them in order to brew more health remedies.",
                     ["medicine", "water"], [5, 6], "Healer"),
                 NPC("Grimwald", "needs gold and food as his crew grows hungry while there are still some repairs that remain unfinished.",
                     ["gold", "food"], [13, 6], "Blacksmith"),
-                NPC("Sigrun", "needs medicine and gold — the wards require both herbs and offerings.",
+                NPC("Sigrun", "needs medicine and gold as the wards require both rare herbs and offerings.",
                     ["medicine", "gold"], [3, 10], "Runekeeper"),
             ]
         elif day >= 5:
             self.npcs = [
-                NPC("Brunhilda", "needs food and water — the hold grows desperate.",
+                NPC("Brunhilda", "needs food and water as the excavation crew are slowly getting more exhausted as they keep digging more routes.",
                     ["food", "water"], [10, 8], "Miner"),
-                NPC("Thrain", "needs water and food — the farm is failing.",
+                NPC("Thrain", "needs water and food for both the farmhand and the land.",
                     ["water", "food"], [8, 6], "Farmer"),
-                NPC("Durin", "needs medicine and water — illness spreads and the wells are dry.",
+                NPC("Durin", "needs medicine and water; one of the wells got contaminated with bacteria, leading to some dwarves getting sick.",
                     ["medicine", "water"], [6, 8], "Healer"),
                 NPC("Grimwald", 
-                    "steps forward, a heavy pouch in his hands. 'Don. I haven't forgotten what ye did for the forges.'",
+                    "steps forward, a heavy pouch in his hands. 'Mornin' to you, Don. I haven't forgotten what ye did for me way back when. Thanks to you, the forges are roaring louder than ever so here's a token of thanks.'",
                     [], [], "Blacksmith",
                     intro="Grimwald approaches, wiping soot from his brow. He places a heavy pouch on your desk.",
                     gift_amount=100 if len(self.grimwald_investments) >= 2 else (40 if len(self.grimwald_investments) == 1 else 0)
                 ),
-                NPC("Sigrun", "needs medicine and gold — the wards fade faster than he can renew them.",
+                NPC("Sigrun", "needs medicine and gold as the protection wards fade faster than the oncoming flood thrashing against them.",
                     ["medicine", "gold"], [4, 12], "Runekeeper"),
             ]
 
@@ -336,7 +336,7 @@ class Game:
             resource = npc.resources[0]
             if npc.accepted is True:
                 if resource == "food":
-                    return f"✅ {npc.name} the {npc.role}: Food is restocked. {npc.name}'s kin will get to eat tonight. {change_str}{gold_str}"
+                    return f"✅ {npc.name} the {npc.role}: Food is restocked. {npc.name}'s crew will get to eat tonight. {change_str}{gold_str}"
                 elif resource == "water":
                     return f"✅ {npc.name} the {npc.role}: Water is restocked. The crops have been moistened and are able to grow a little more. {change_str}{gold_str}"
                 elif resource == "medicine":
@@ -358,7 +358,7 @@ class Game:
                     return f"⚠️ {npc.name} the {npc.role}: The forges remain broken. {change_str}"
             elif npc.status == "rejected":
                 if resource == "food":
-                    return f"❌ {npc.name} the {npc.role}: They glare at you with resentment. They will remember you being the reason their kin will starve. {change_str}"
+                    return f"❌ {npc.name} the {npc.role}: They glare at you with resentment. They will remember you being the reason their crew will starve. {change_str}"
                 elif resource == "water":
                     return f"❌ {npc.name} the {npc.role}: {npc.name} flashes a visible frown and leaves. {change_str}"
                 elif resource == "medicine":
