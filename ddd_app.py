@@ -9,7 +9,6 @@ import json
 import base64
 import os
 
-
 def img_to_bytes(img_path):
     if not os.path.exists(img_path):
         st.error(f"Error: Image not found at {img_path}")
@@ -56,19 +55,12 @@ def clickable_image(image_path, button_text="Click Me", use_container_width=True
         st.query_params.clear() 
         return True
     return False
-# ---------------------------------------
 
 st.set_page_config(
     page_title="Don't Dwindle, Don!",
     page_icon="⛏️",
     layout="wide"
 )
-st.set_page_config(
-    page_title="Don't Dwindle, Don!",
-    page_icon="⛏️",
-    layout="wide"
-)
-
 
 # ============================================
 # CHARACTER CLASS (Parent)
@@ -82,7 +74,6 @@ class Character:
     def introduce(self):
         return f"I am {self.name}, the {self.role}."
 
-
 # ============================================
 # PLAYER CLASS (Inherits Character)
 # ============================================
@@ -94,7 +85,6 @@ class Player(Character):
         self.medicine = 20
         self.gold = 100
         self.happiness = 70
-
 
 # ============================================
 # NPC CLASS (Inherits Character)
@@ -124,7 +114,6 @@ class NPC(Character):
             else:
                 return "sad"
         return "neutral"
-
 
 # ============================================
 # GAME CLASS
@@ -198,7 +187,7 @@ class Game:
                     ["water", "food"], [6, 5], "Farmer"),
                 NPC("Durin", "needs medicine and water — the wounded need tending and the wells are low.",
                     ["medicine", "water"], [5, 6], "Healer"),
-                NPC("Grimwald", "needs  and food as his crew grows hungry while there are still some repairs that remain unfinished.",
+                NPC("Grimwald", "needs gold and food as his crew grows hungry while there are still some repairs that remain unfinished.",
                     ["gold", "food"], [13, 6], "Blacksmith"),
                 NPC("Sigrun", "needs medicine and gold — the wards require both herbs and offerings.",
                     ["medicine", "gold"], [3, 10], "Runekeeper"),
@@ -311,26 +300,26 @@ class Game:
         return len(missing) == 0, missing
 
     def fulfill_request(self, npc):
-
+        # If it's a gift, just give the player the gold
         if npc.gift_amount > 0:
             self.player.gold += npc.gift_amount
             npc.accepted = True
             npc.status = "fine"
-            return 0 
-    
-
+            return 0 # No morale change for a gift
+            
+        # Otherwise, process the normal request
         for resource, amount in zip(npc.resources, npc.amounts):
             current = getattr(self.player, resource)
             setattr(self.player, resource, current - amount)
-    
+            
         morale_change = self.get_morale_accept()
         self.player.happiness = min(100, self.player.happiness + morale_change)
         npc.accepted = True
         npc.status = "fine"
-
+        
         if npc.name == "Grimwald" and "gold" in npc.resources:
             self.grimwald_investments.append(self.day)
-    
+        
         if self.day >= 4:
             self.player.gold += 10
         else:
@@ -409,7 +398,6 @@ class Game:
     def check_game_over(self):
         return self.player.happiness <= 0
 
-
 # ============================================
 # SESSION STATE INIT
 # ============================================
@@ -422,7 +410,6 @@ if "game" not in st.session_state:
     st.session_state.rejects_this_day = 0
 
 game = st.session_state.game
-
 
 # ============================================
 # SIDEBAR
@@ -447,12 +434,10 @@ if st.session_state.screen in ["play", "evaluation", "upgrades", "new_day"]:
         use_container_width=True
     )
 
-
 # ============================================
 # TITLE SCREEN
 # ============================================
 if st.session_state.screen == "title":
-    
     _, img_col, _ = st.columns([1, 3, 1])
     
     with img_col:
@@ -474,22 +459,20 @@ if st.session_state.screen == "title":
 
     _, load_col, _ = st.columns([1, 2, 1])
     with load_col:
-        
         with st.expander("📂 Load a Saved Game"):
-                uploaded = st.file_uploader("Upload a saved game file", type="json", label_visibility="collapsed")
-                if uploaded is not None:
-                    try:
-                        data = json.load(uploaded)
-                        game.load_from_dict(data)
-                        st.session_state.request_index = 0
-                        st.session_state.requests_this_day = 0
-                        st.session_state.day_consequences = []
-                        st.session_state.screen = "play"
-                        st.success(f"Loaded Day {data['day']} save!")
-                        st.rerun()
-                    except Exception as e:
-                        st.error(f"Failed to load save: {e}")
-
+            uploaded = st.file_uploader("Upload a saved game file", type="json", label_visibility="collapsed")
+            if uploaded is not None:
+                try:
+                    data = json.load(uploaded)
+                    game.load_from_dict(data)
+                    st.session_state.request_index = 0
+                    st.session_state.requests_this_day = 0
+                    st.session_state.day_consequences = []
+                    st.session_state.screen = "play"
+                    st.success(f"Loaded Day {data['day']} save!")
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Failed to load save: {e}")
 
 # ============================================
 # NEW DAY INTRO
@@ -532,7 +515,6 @@ elif st.session_state.screen == "new_day":
         st.session_state.doculog_start_index = len(game.doculog)
         st.session_state.screen = "play"
         st.rerun()
-
 
 # ============================================
 # PLAY SCREEN
@@ -600,43 +582,42 @@ elif st.session_state.screen == "play":
     else:
         col_a, col_b = st.columns(2)
 
-            with col_a:
-                if st.button("✅ ACCEPT", use_container_width=True, type="primary"):
-                    if can_afford:
-                        morale_change = game.fulfill_request(npc)
-                    else:
-                        morale_change = -game.get_morale_deny()
-                        game.player.happiness += morale_change
-                        npc.accepted = False
-                        npc.status = "denied"
-
-                    entry = game.report_dwarf(npc, morale_change)
-                    game.doculog.append(entry)
-                    st.session_state.request_index += 1
-                    st.session_state.requests_this_day += 1
-                    st.rerun()
-
-            with col_b:
-                if st.button("❌ REJECT", use_container_width=True):
-                    st.session_state.rejects_this_day += 1
-                    morale_change = -game.get_morale_reject(st.session_state.rejects_this_day)
-                    
+        with col_a:
+            if st.button("✅ ACCEPT", use_container_width=True, type="primary"):
+                if can_afford:
+                    morale_change = game.fulfill_request(npc)
+                else:
+                    morale_change = -game.get_morale_deny()
                     game.player.happiness += morale_change
                     npc.accepted = False
-                    npc.status = "rejected"
-    
-                    entry = game.report_dwarf(npc, morale_change)
-                    game.doculog.append(entry)
-                    st.session_state.request_index += 1
-                    st.session_state.requests_this_day += 1
-                    st.rerun()
+                    npc.status = "denied"
 
-        if game.doculog:
-            st.divider()
-            with st.expander("📖 Open Don's Docu-log (Today's Entries)", expanded=True):
-                for entry in game.doculog[st.session_state.doculog_start_index:]:
-                    st.write(entry)
+                entry = game.report_dwarf(npc, morale_change)
+                game.doculog.append(entry)
+                st.session_state.request_index += 1
+                st.session_state.requests_this_day += 1
+                st.rerun()
 
+        with col_b:
+            if st.button("❌ REJECT", use_container_width=True):
+                st.session_state.rejects_this_day += 1
+                morale_change = -game.get_morale_reject(st.session_state.rejects_this_day)
+                
+                game.player.happiness += morale_change
+                npc.accepted = False
+                npc.status = "rejected"
+
+                entry = game.report_dwarf(npc, morale_change)
+                game.doculog.append(entry)
+                st.session_state.request_index += 1
+                st.session_state.requests_this_day += 1
+                st.rerun()
+
+    if game.doculog:
+        st.divider()
+        with st.expander("📖 Open Don's Docu-log (Today's Entries)", expanded=True):
+            for entry in game.doculog[st.session_state.doculog_start_index:]:
+                st.write(entry)
 
 # ============================================
 # EVALUATION SCREEN
@@ -773,7 +754,6 @@ elif st.session_state.screen == "evaluation":
         st.session_state.screen = "upgrades"
         st.rerun()
 
-
 # ============================================
 # UPGRADES SCREEN
 # ============================================
@@ -791,32 +771,32 @@ elif st.session_state.screen == "upgrades":
 
     st.markdown(f"### Gold: 💰 {game.player.gold}")
 
-
+    # UPDATED SHOP QUANTITIES
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.markdown("### 🍞 Food +10")
+        st.markdown("### 🍞 Food +20")
         st.write("**Cost:** 50 Gold")
         if st.button("Buy Food", use_container_width=True, disabled=game.player.gold < 50):
-            game.player.food += 10
+            game.player.food += 20
             game.player.gold -= 50
             st.success("Food stores increased!")
             st.rerun()
 
     with col2:
-        st.markdown("### 💧 Water +10")
+        st.markdown("### 💧 Water +20")
         st.write("**Cost:** 50 Gold")
         if st.button("Buy Water", use_container_width=True, disabled=game.player.gold < 50):
-            game.player.water += 10
+            game.player.water += 20
             game.player.gold -= 50
             st.success("Water stores increased!")
             st.rerun()
 
     with col3:
-        st.markdown("### 💊 Medicine +5")
+        st.markdown("### 💊 Medicine +10")
         st.write("**Cost:** 60 Gold")
         if st.button("Buy Medicine", use_container_width=True, disabled=game.player.gold < 60):
-            game.player.medicine += 5
+            game.player.medicine += 10
             game.player.gold -= 60
             st.success("Medicine stores increased!")
             st.rerun()
@@ -834,7 +814,6 @@ elif st.session_state.screen == "upgrades":
             st.session_state.day_consequences = game.apply_yesterday_consequences()
             st.session_state.screen = "new_day"
             st.rerun()
-
 
 # ============================================
 # END OF BETA SCREEN
@@ -858,7 +837,6 @@ elif st.session_state.screen == "end":
         for key in list(st.session_state.keys()):
             del st.session_state[key]
         st.rerun()
-
 
 # ============================================
 # GAME OVER SCREEN
