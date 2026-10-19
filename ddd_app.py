@@ -319,7 +319,8 @@ class Game:
 
     def report_dwarf(self, npc, morale_change):
         change_str = f"**Morale {'+' if morale_change >= 0 else ''}{morale_change}**"
-        gold_str = " and **+5 Gold**" if npc.accepted is True else ""
+        gold_amount = 10 if self.day >= 4 else 5
+        gold_str = f" and **+{gold_amount} Gold**" if npc.accepted is True else ""
 
         if len(npc.resources) == 1:
             resource = npc.resources[0]
