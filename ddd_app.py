@@ -119,7 +119,7 @@ class NPC(Character):
 # GAME CLASS
 # ============================================
 class Game:
-    MAX_DAY = 5
+    MAX_DAY = 7
 
     def __init__(self):
         self.player = None
@@ -192,7 +192,7 @@ class Game:
                 NPC("Sigrun", "needs medicine and gold as the wards require both rare herbs and offerings.",
                     ["medicine", "gold"], [3, 10], "Runekeeper"),
             ]
-        elif day >= 5:
+                elif day == 5:
             self.npcs = [
                 NPC("Brunhilda", "needs food and water as the excavation crew are slowly getting more exhausted as they keep digging more routes.",
                     ["food", "water"], [10, 8], "Miner"),
@@ -209,6 +209,32 @@ class Game:
                 NPC("Sigrun", "needs medicine and gold as the protection wards fade faster than the oncoming flood thrashing against them.",
                     ["medicine", "gold"], [4, 12], "Runekeeper"),
             ]
+                elif day == 6:
+            self.npcs = [
+                NPC("Brunhilda", "pleads for food and water. The excavation has taken everything from her crew.",
+                    ["food", "water"], [12, 10], "Miner"),
+                NPC("Thrain", "needs water and food — the soil is completely dead, and his farmhands are starving.",
+                    ["water", "food"], [10, 8], "Farmer"),
+                NPC("Durin", "needs medicine and water — a plague is sweeping through the lower tunnels.",
+                    ["medicine", "water"], [8, 10], "Healer"),
+                NPC("Grimwald", "needs gold and food to keep the forges burning through the night.",
+                    ["gold", "food"], [15, 10], "Blacksmith"),
+                NPC("Sigrun", "needs medicine and gold — the wards are shattering. She needs everything she can get.",
+                    ["medicine", "gold"], [6, 15], "Runekeeper"),
+            ]
+                elif day >= 7:
+            self.npcs = [
+                NPC("Brunhilda", "stands at your desk, barely able to speak. 'Just one more day, Don. We just need to survive today.'",
+                    ["food", "water", "medicine"], [15, 12, 5], "Miner"),
+                NPC("Thrain", "needs water, food, and medicine — he has fallen ill himself.",
+                    ["water", "food", "medicine"], [12, 10, 5], "Farmer"),
+                NPC("Durin", "begs for medicine and water to save the remaining sick.",
+                    ["medicine", "water"], [10, 12], "Healer"),
+                NPC("Grimwald", "needs gold and food for one final push to keep the hold's heart beating.",
+                    ["gold", "food"], [20, 12], "Blacksmith"),
+                NPC("Sigrun", "needs medicine, gold, and water to cast the final barrier.",
+                    ["medicine", "gold", "water"], [8, 20, 10], "Runekeeper"),
+            ]
 
     def new_game(self):
         self.player = Player("Don")
@@ -222,20 +248,20 @@ class Game:
     # MORALE SCALING (Varies by Day)
     # ============================================
     def get_morale_accept(self):
-        table = {1: 5, 2: 4, 3: 3, 4: 2, 5: 2}
+        table = {1: 5, 2: 4, 3: 3, 4: 2, 5: 2, 6: 2, 7: 2}
         return table.get(self.day, 2)
 
     def get_morale_deny(self):
-        table = {1: 3, 2: 4, 3: 5, 4: 7, 5: 8}
-        return table.get(self.day, 8)
+        table = {1: 3, 2: 4, 3: 5, 4: 7, 5: 8, 6: 12, 7: 12}
+        return table.get(self.day, 12)
 
     def get_morale_reject(self, reject_count):
         """Reject penalty scales with how many dwarves were rejected today."""
-        base_table = {1: 2, 2: 3, 3: 4, 4: 5, 5: 6}
-        mult_table = {1: 2, 2: 2, 3: 3, 4: 3, 5: 4}
+        base_table = {1: 2, 2: 3, 3: 4, 4: 5, 5: 6, 6: 9, 7: 9}
+        mult_table = {1: 2, 2: 2, 3: 3, 4: 3, 5: 4, 6: 6, 7: 6}
         
-        base = base_table.get(self.day, 6)
-        mult = mult_table.get(self.day, 4)
+        base = base_table.get(self.day, 9)
+        mult = mult_table.get(self.day, 6)
         
         if reject_count == 0:
             return 0
@@ -775,28 +801,28 @@ elif st.session_state.screen == "upgrades":
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.markdown("### 🍞 Food +20")
+        st.markdown("### 🍞 Food +30")
         st.write("**Cost:** 50 Gold")
         if st.button("Buy Food", use_container_width=True, disabled=game.player.gold < 50):
-            game.player.food += 20
+            game.player.food += 30
             game.player.gold -= 50
             st.success("Food stores increased!")
             st.rerun()
 
     with col2:
-        st.markdown("### 💧 Water +20")
+        st.markdown("### 💧 Water +30")
         st.write("**Cost:** 50 Gold")
         if st.button("Buy Water", use_container_width=True, disabled=game.player.gold < 50):
-            game.player.water += 20
+            game.player.water += 30
             game.player.gold -= 50
             st.success("Water stores increased!")
             st.rerun()
 
     with col3:
-        st.markdown("### 💊 Medicine +10")
+        st.markdown("### 💊 Medicine +15")
         st.write("**Cost:** 60 Gold")
         if st.button("Buy Medicine", use_container_width=True, disabled=game.player.gold < 60):
-            game.player.medicine += 10
+            game.player.medicine += 15
             game.player.gold -= 60
             st.success("Medicine stores increased!")
             st.rerun()
@@ -804,7 +830,7 @@ elif st.session_state.screen == "upgrades":
     st.divider()
 
     if game.day >= Game.MAX_DAY:
-        if st.button("▶️ END THE BETA", use_container_width=True, type="primary"):
+        if st.button("▶️ SURVIVE THE WEEK", use_container_width=True, type="primary"):
             st.session_state.screen = "end"
             st.rerun()
     else:
@@ -816,16 +842,15 @@ elif st.session_state.screen == "upgrades":
             st.rerun()
 
 # ============================================
-# END OF BETA SCREEN
+# END OF GAME SCREEN
 # ============================================
 elif st.session_state.screen == "end":
-    st.title("🌅 A NEW DAWN BREAKS")
+    st.title("🏆 THE HOLD ENDURES")
     st.divider()
-    st.write(f"Thank you for playing **Don't Dwindle, Don!**")
-    st.write(f"**Days survived:** {Game.MAX_DAY}")
+    st.write(f"Congratulations, Don! You survived **{Game.MAX_DAY} days**.")
     st.write("")
-    st.write("This is the end of the beta.")
-    st.write("More days, dwarves, and challenges to come.")
+    st.write("The dwarves sing songs of your leadership.")
+    st.write("**Don't Dwindle, Don. You didn't.**")
     st.divider()
 
     st.subheader("--- Final Docu-log ---")
