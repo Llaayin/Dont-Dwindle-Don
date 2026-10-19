@@ -240,7 +240,6 @@ class Game:
         self.player = Player("Don")
         self.day = 1
         self.doculog = []
-        self.doculog.append("## 🌅 --- Day 1 ---")
         self.day_summaries = []
         self.load_day(1)
         self.grimwald_investments = []
@@ -280,7 +279,6 @@ class Game:
             "day_summaries": self.day_summaries,
             "start_happiness": self.start_happiness,
             "grimwald_investments": self.grimwald_investments,
-            "doculog_start_index": st.session_state.get("doculog_start_index", 0),
         }
 
     def load_from_dict(self, data):
@@ -296,7 +294,6 @@ class Game:
         self.start_happiness = data.get("start_happiness", 70)
         self.load_day(self.day)
         self.grimwald_investments = data.get("grimwald_investments", [])
-        st.session_state.doculog_start_index = data.get("doculog_start_index", 0)
 
     def apply_yesterday_consequences(self):
         if not self.day_summaries:
@@ -437,7 +434,6 @@ if "game" not in st.session_state:
     st.session_state.day_consequences = []
     st.session_state.requests_this_day = 0
     st.session_state.rejects_this_day = 0
-    st.session_state.doculog_start_index = 0
 
 game = st.session_state.game
 
@@ -498,8 +494,6 @@ if st.session_state.screen == "title":
                     st.session_state.request_index = 0
                     st.session_state.requests_this_day = 0
                     st.session_state.day_consequences = []
-                    st.session_state.rejects_this_day = 0
-                    st.session_state.income_given_today = False
                     st.session_state.screen = "play"
                     st.success(f"Loaded Day {data['day']} save!")
                     st.rerun()
@@ -648,12 +642,8 @@ elif st.session_state.screen == "play":
     if game.doculog:
         st.divider()
         with st.expander("📖 Open Don's Docu-log (Today's Entries)", expanded=True):
-            start_idx = st.session_state.get("doculog_start_index", 0)
-            for entry in game.doculog[start_idx:]:
-                if entry.startswith("##"):
-                    st.subheader(entry.replace("## ", ""))
-                else:
-                    st.write(entry)
+            for entry in game.doculog[st.session_state.doculog_start_index:]:
+                st.write(entry)
 
 # ============================================
 # EVALUATION SCREEN
@@ -755,4 +745,145 @@ elif st.session_state.screen == "evaluation":
     if morale_change > 0:
         st.success(f"📈 Net morale change today: **+{morale_change}**")
     elif morale_change < 0:
-        st.error(f"📉 Net morale change today:
+        st.error(f"📉 Net morale change today: **{morale_change}**")
+    else:
+        st.info("No net morale change today.")
+
+    st.divider()
+
+    with st.expander("📖 Open Don's Docu-log (Today's Entries)"):
+        if todays_entries:
+            for entry in todays_entries:
+                st.write(entry)
+        else:
+            st.write("No entries today.")
+
+    with st.expander("📚 View Full Docu-log (All Days)"):
+        if game.doculog:
+            for entry in game.doculog:
+                if entry.startswith("##"):
+                    st.subheader(entry.replace("## ", ""))
+                else:
+                    st.write(entry)
+        else:
+            st.write("The Docu-log is empty.")
+
+    if game.check_game_over():
+        st.session_state.screen = "game_over"
+        st.rerun()
+
+    if st.button("▶️ GO TO FORGE & MARKET", type="primary", use_container_width=True):
+        game.day_summaries.append({
+            "day": game.day,
+            "morale_end": game.player.happiness,
+            "food_end": game.player.food,
+            "water_end": game.player.water,
+            "medicine_end": game.player.medicine,
+        })
+        st.session_state.screen = "upgrades"
+        st.rerun()
+
+# ============================================
+# UPGRADES SCREEN
+# ============================================
+elif st.session_state.screen == "upgrades":
+    st.title("🔨 FORGE & MARKET")
+    
+    shop_col1, shop_col2 = st.columns([1, 3])
+    with shop_col1:
+        st.image("assets/Shopkeep.png", use_container_width=True)
+    with shop_col2:
+        st.write("### 🧔 The Shopkeeper")
+        st.write("*'Take a gander at my wares, Don. I have some good prices for a hold in need.'*")
+        
+    st.divider()
+
+    st.markdown(f"### Gold: 💰 {game.player.gold}")
+
+    # UPDATED SHOP QUANTITIES
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.markdown("### 🍞 Food +30")
+        st.write("**Cost:** 50 Gold")
+        if st.button("Buy Food", use_container_width=True, disabled=game.player.gold < 50):
+            game.player.food += 30
+            game.player.gold -= 50
+            st.success("Food stores increased!")
+            st.rerun()
+
+    with col2:
+        st.markdown("### 💧 Water +30")
+        st.write("**Cost:** 50 Gold")
+        if st.button("Buy Water", use_container_width=True, disabled=game.player.gold < 50):
+            game.player.water += 30
+            game.player.gold -= 50
+            st.success("Water stores increased!")
+            st.rerun()
+
+    with col3:
+        st.markdown("### 💊 Medicine +15")
+        st.write("**Cost:** 60 Gold")
+        if st.button("Buy Medicine", use_container_width=True, disabled=game.player.gold < 60):
+            game.player.medicine += 15
+            game.player.gold -= 60
+            st.success("Medicine stores increased!")
+            st.rerun()
+
+    st.divider()
+
+    if game.day >= Game.MAX_DAY:
+        if st.button("▶️ SURVIVE THE WEEK", use_container_width=True, type="primary"):
+            st.session_state.screen = "end"
+            st.rerun()
+    else:
+        if st.button("▶️ BEGIN NEXT DAY", use_container_width=True, type="primary"):
+            game.day += 1
+            game.load_day(game.day)
+            st.session_state.day_consequences = game.apply_yesterday_consequences()
+            st.session_state.screen = "new_day"
+            st.rerun()
+
+# ============================================
+# END OF GAME SCREEN
+# ============================================
+elif st.session_state.screen == "end":
+    # Add your CG image here (upload it to your assets folder as 'ending_cg.png')
+    _, img_col, _ = st.columns([1, 3, 1])
+    with img_col:
+        st.image("assets/ending_cg.png", use_container_width=True)
+        
+    st.divider()
+    st.title("🏆 THE HOLD ENDURES")
+    st.divider()
+    
+    st.write("Congratulations, Don. You survived an entire week of resource management in these trying times.")
+    st.write("")
+    st.write("We'll take it from here, so for now, you can go rest and get yourself a drink. Thank you for not Dwindling, Don.")
+    
+    st.divider()
+
+    st.subheader("--- Final Docu-log ---")
+    for entry in game.doculog:
+        st.write(entry)
+
+    st.divider()
+    if st.button("🔁 PLAY AGAIN", type="primary", use_container_width=True):
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
+        st.rerun()
+
+# ============================================
+# GAME OVER SCREEN
+# ============================================
+elif st.session_state.screen == "game_over":
+    st.title("💀 THE HOLD HAS FALLEN")
+    st.divider()
+    st.write("The morale of your people reached zero.")
+    st.write("Dwarves abandoned the hold. Don's leadership has failed.")
+    st.write(f"**Days survived:** {game.day}")
+    st.divider()
+    if st.button("🔁 TRY AGAIN", type="primary", use_container_width=True):
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
+        st.rerun()
