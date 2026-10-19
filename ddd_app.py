@@ -598,7 +598,7 @@ elif st.session_state.screen == "play":
             
     # Otherwise, show the normal Accept/Reject buttons
     else:
-        col_a, col_b = st.columns(2)
+    col_a, col_b = st.columns(2)
 
     with col_a:
         if st.button("✅ ACCEPT", use_container_width=True, type="primary"):
