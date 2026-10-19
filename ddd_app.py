@@ -139,6 +139,7 @@ class Game:
         self.gold_income = 0
         self.npcs = []
         self.day_summaries = []
+        self.grimwald_investments = []
 
         self.load_day(1)
 
@@ -196,12 +197,18 @@ class Game:
                     ["water", "food"], [6, 5], "Farmer"),
                 NPC("Durin", "needs medicine and water — the wounded need tending and the wells are low.",
                     ["medicine", "water"], [5, 6], "Healer"),
-                NPC("Grimwald", "needs gold and food as his crew grows hungry while there are still some repairs that remain unfinished.",
+                NPC("Grimwald", "needs  and food as his crew grows hungry while there are still some repairs that remain unfinished.",
                     ["gold", "food"], [13, 6], "Blacksmith"),
                 NPC("Sigrun", "needs medicine and gold — the wards require both herbs and offerings.",
                     ["medicine", "gold"], [3, 10], "Runekeeper"),
             ]
         elif day >= 5:
+            if len(self.grimwald_investments) >= 2:
+                self.player.gold += 100
+                self.doculog.append("💰 **Grimwald's Investment Paid Off!** He rewarded the hold with **+100 Gold** as a token of his appreciation.")
+            elif len(self.grimwald_investments) == 1:
+                self.player.gold += 40
+                self.doculog.append("💰 **Grimwald's Investment Returned (Partial).** You only funded him once, so he gave a smaller reward of **+40 Gold**.")
             self.npcs = [
                 NPC("Brunhilda", "needs food and water — the hold grows desperate.",
                     ["food", "water"], [10, 8], "Miner"),
@@ -221,6 +228,7 @@ class Game:
         self.doculog = []
         self.day_summaries = []
         self.load_day(1)
+        self.grimwald_investments = []
 
     # ============================================
     # MORALE SCALING (Varies by Day)
@@ -256,6 +264,7 @@ class Game:
             "doculog": self.doculog,
             "day_summaries": self.day_summaries,
             "start_happiness": self.start_happiness,
+            "grimwald_investments": self.grimwald_investments,
         }
 
     def load_from_dict(self, data):
@@ -270,6 +279,7 @@ class Game:
         self.day_summaries = data.get("day_summaries", [])
         self.start_happiness = data.get("start_happiness", 70)
         self.load_day(self.day)
+        self.grimwald_investments = data.get("grimwald_investments", [])
 
     def apply_yesterday_consequences(self):
         if not self.day_summaries:
@@ -309,6 +319,8 @@ class Game:
         self.player.happiness = min(100, self.player.happiness + morale_change)
         npc.accepted = True
         npc.status = "fine"
+        if npc.name == "Grimwald" and "gold" in npc.resources:
+            self.grimwald_investments.append(self.day)
         
         if self.day >= 4:
             self.player.gold += 10
@@ -333,7 +345,7 @@ class Game:
                     return f"✅ {npc.name} the {npc.role}: Medicine is restocked. {npc.name} breathes a sigh of relief as the injured workers' wounds can finally be taken care of. {change_str}{gold_str}"
                 elif resource == "gold":
                     if npc.name == "Grimwald":
-                        return f"✅ Grimwald the Blacksmith: The gold is handed over. 'My thanks, Don. I'll have the forges roaring by morning.' {change_str}{gold_str}"
+                        return f"✅ Grimwald the Blacksmith: The gold is handed over. 'My thanks, Don. I'll have the forges roaring by morning.' {change_str}"
                     return f"✅ {npc.name} the {npc.role}: Gold received. {change_str}"
             elif npc.status == "denied":
                 if resource == "food":
