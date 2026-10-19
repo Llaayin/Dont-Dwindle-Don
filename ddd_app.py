@@ -566,7 +566,9 @@ elif st.session_state.screen == "play":
 
     with col_b:
         if st.button("❌ REJECT", use_container_width=True):
-            morale_change = -game.get_morale_reject()
+            st.session_state.rejects_this_day += 1
+            morale_change = -game.get_morale_reject(st.session_state.rejects_this_day)
+            
             game.player.happiness += morale_change
             npc.accepted = False
             npc.status = "rejected"
