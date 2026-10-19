@@ -437,6 +437,7 @@ if st.session_state.screen == "title":
         st.session_state.day_consequences = []
         st.session_state.requests_this_day = 0
         st.session_state.rejects_this_day = 0
+        st.session_state.doculog_start_index = len(game.doculog)
         st.session_state.screen = "play"
         st.rerun()
 
@@ -582,9 +583,9 @@ elif st.session_state.screen == "play":
 
         if game.doculog:
             st.divider()
-            with st.expander("📖 Open Don's Docu-log (Today's Entries)", expanded=True):
-                for entry in game.doculog[-5:]:
-                    st.write(entry)
+                with st.expander("📖 Open Don's Docu-log (Today's Entries)", expanded=True):
+                    for entry in game.doculog[st.session_state.doculog_start_index:]:
+                        st.write(entry)
 
 
 # ============================================
@@ -664,7 +665,7 @@ elif st.session_state.screen == "evaluation":
     st.divider()
     st.subheader("--- Today's Decision Statistics ---")
 
-    today_start = max(0, len(game.doculog) - st.session_state.requests_this_day)
+    today_start = st.session_state.doculog_start_index
     todays_entries = game.doculog[today_start:]
 
     accepted_count = sum(1 for e in todays_entries if e.startswith("✅"))
