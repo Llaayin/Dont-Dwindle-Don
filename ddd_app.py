@@ -217,7 +217,6 @@ class Game:
                     intro="Grimwald approaches, wiping soot from his brow. He places a heavy pouch on your desk.",
                     gift_amount=100 if len(self.grimwald_investments) >= 2 else (40 if len(self.grimwald_investments) == 1 else 0)
                 ),
-                ),
                 NPC("Sigrun", "needs medicine and gold — the wards fade faster than he can renew them.",
                     ["medicine", "gold"], [4, 12], "Runekeeper"),
             ]
