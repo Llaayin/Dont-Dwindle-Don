@@ -211,28 +211,28 @@ class Game:
             ]
         elif day == 6:
             self.npcs = [
-                NPC("Brunhilda", "pleads for food and water. The excavation has taken everything from her crew.",
+                NPC("Brunhilda", "pleads for food and water. The excavation has taken every bit of energy from her crew.",
                     ["food", "water"], [12, 10], "Miner"),
-                NPC("Thrain", "needs water and food — the soil is completely dead, and his farmhands are starving.",
+                NPC("Thrain", "needs water and food as the soil has completely dried out, and his farmhands are starving.",
                     ["water", "food"], [10, 8], "Farmer"),
-                NPC("Durin", "needs medicine and water — a plague is sweeping through the lower tunnels.",
+                NPC("Durin", "needs medicine and water; a plague is sweeping through the lower tunnels as the flood continues to break through.",
                     ["medicine", "water"], [8, 10], "Healer"),
-                NPC("Grimwald", "needs gold and food to keep the forges burning through the night.",
+                NPC("Grimwald", "needs gold and food to keep the forges burning through the night as the floods threaten to extinguish the flames of the forge.",
                     ["gold", "food"], [15, 10], "Blacksmith"),
-                NPC("Sigrun", "needs medicine and gold — the wards are shattering. he needs anything he can get.",
+                NPC("Sigrun", "needs medicine and gold — the wards are shattering, and he needs anything he can get in order to channel a redirecting spell against the raging currents.",
                     ["medicine", "gold"], [6, 15], "Runekeeper"),
             ]
         elif day >= 7:
             self.npcs = [
-                NPC("Brunhilda", "stands at your desk, barely able to speak. 'Just one more day, Don. We just need to survive today.'",
+                NPC("Brunhilda", "stands at your desk, exhausted and barely able to speak. 'Just one more day, Don... we just need to survive today.'",
                     ["food", "water", "medicine"], [15, 12, 5], "Miner"),
-                NPC("Thrain", "needs water, food, and medicine — he has fallen ill himself.",
+                NPC("Thrain", "needs water, food, and medicine, for he too has fallen ill while his farmhands begins to panic without his guidance.",
                     ["water", "food", "medicine"], [12, 10, 5], "Farmer"),
-                NPC("Durin", "begs for medicine and water to save the remaining sick.",
+                NPC("Durin", "begs for medicine and water to save the remaining sick dwarves, including Thrain.",
                     ["medicine", "water"], [10, 12], "Healer"),
                 NPC("Grimwald", "needs gold and food for one final push to keep the hold's heart beating.",
                     ["gold", "food"], [18, 12], "Blacksmith"),
-                NPC("Sigrun", "needs medicine, gold, and water to cast the final barrier.",
+                NPC("Sigrun", "needs medicine, gold, and water in order to fortify the final barrier.",
                     ["medicine", "gold", "water"], [8, 20, 10], "Runekeeper"),
             ]
 
