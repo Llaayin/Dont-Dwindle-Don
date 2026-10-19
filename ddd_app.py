@@ -312,7 +312,7 @@ class Game:
 
         def fulfill_request(self, npc):
         # If it's a gift, just give the player the gold
-        if npc.gift_amount > 0:
+    if npc.gift_amount > 0:
             self.player.gold += npc.gift_amount
             npc.accepted = True
             npc.status = "fine"
