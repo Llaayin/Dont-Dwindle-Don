@@ -845,12 +845,19 @@ elif st.session_state.screen == "upgrades":
 # END OF GAME SCREEN
 # ============================================
 elif st.session_state.screen == "end":
+    # Add your CG image here (upload it to your assets folder as 'ending_cg.png')
+    _, img_col, _ = st.columns([1, 3, 1])
+    with img_col:
+        st.image("assets/ending_cg.png", use_container_width=True)
+        
+    st.divider()
     st.title("🏆 THE HOLD ENDURES")
     st.divider()
-    st.write(f"Congratulations, Don! You survived **{Game.MAX_DAY} days**.")
+    
+    st.write("Congratulations, Don. You survived an entire week of resource management in these trying times.")
     st.write("")
-    st.write("The dwarves sing songs of your leadership.")
-    st.write("**Don't Dwindle, Don. You didn't.**")
+    st.write("We'll take it from here, so for now, you can go rest and get yourself a drink. Thank you for not Dwindling, Don.")
+    
     st.divider()
 
     st.subheader("--- Final Docu-log ---")
