@@ -597,10 +597,16 @@ elif st.session_state.screen == "evaluation":
 
     st.divider()
     st.subheader("--- Day's Outcome ---")
-    if game.player.happiness > game.start_happiness:
+    morale_change = game.player.happiness - game.start_happiness
+    
+    if morale_change > 0:
         st.success("🌟 The hold's spirit has risen today. Don's leadership has not gone unnoticed.")
-    elif game.player.happiness < game.start_happiness:
-        st.error("💀 The hold's morale has fallen. A shadow hangs over the hold.")
+    elif morale_change < -9: 
+        # Only trigger the bad message if morale dropped by 10 or more
+        st.error("💀 The hold's morale has taken a heavy blow. A shadow hangs over the hold.")
+    elif morale_change < 0:
+        # Small drops just get a warning
+        st.warning("⚠️ The hold's morale dipped slightly today, but the dwarves press on.")
     else:
         st.info("⚖️ The hold remains unchanged. Neither joy nor sorrow stirs the tunnels tonight.")
 
