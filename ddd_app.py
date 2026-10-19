@@ -192,7 +192,7 @@ class Game:
                 NPC("Sigrun", "needs medicine and gold as the wards require both rare herbs and offerings.",
                     ["medicine", "gold"], [3, 10], "Runekeeper"),
             ]
-                elif day == 5:
+        elif day == 5:
             self.npcs = [
                 NPC("Brunhilda", "needs food and water as the excavation crew are slowly getting more exhausted as they keep digging more routes.",
                     ["food", "water"], [10, 8], "Miner"),
@@ -209,7 +209,7 @@ class Game:
                 NPC("Sigrun", "needs medicine and gold as the protection wards fade faster than the oncoming flood thrashing against them.",
                     ["medicine", "gold"], [4, 12], "Runekeeper"),
             ]
-                elif day == 6:
+        elif day == 6:
             self.npcs = [
                 NPC("Brunhilda", "pleads for food and water. The excavation has taken everything from her crew.",
                     ["food", "water"], [12, 10], "Miner"),
@@ -219,10 +219,10 @@ class Game:
                     ["medicine", "water"], [8, 10], "Healer"),
                 NPC("Grimwald", "needs gold and food to keep the forges burning through the night.",
                     ["gold", "food"], [15, 10], "Blacksmith"),
-                NPC("Sigrun", "needs medicine and gold — the wards are shattering. She needs everything she can get.",
+                NPC("Sigrun", "needs medicine and gold — the wards are shattering. he needs anything he can get.",
                     ["medicine", "gold"], [6, 15], "Runekeeper"),
             ]
-                elif day >= 7:
+        elif day >= 7:
             self.npcs = [
                 NPC("Brunhilda", "stands at your desk, barely able to speak. 'Just one more day, Don. We just need to survive today.'",
                     ["food", "water", "medicine"], [15, 12, 5], "Miner"),
@@ -231,7 +231,7 @@ class Game:
                 NPC("Durin", "begs for medicine and water to save the remaining sick.",
                     ["medicine", "water"], [10, 12], "Healer"),
                 NPC("Grimwald", "needs gold and food for one final push to keep the hold's heart beating.",
-                    ["gold", "food"], [20, 12], "Blacksmith"),
+                    ["gold", "food"], [18, 12], "Blacksmith"),
                 NPC("Sigrun", "needs medicine, gold, and water to cast the final barrier.",
                     ["medicine", "gold", "water"], [8, 20, 10], "Runekeeper"),
             ]
