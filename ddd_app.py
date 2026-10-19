@@ -233,9 +233,17 @@ class Game:
         table = {1: 3, 2: 4, 3: 5, 4: 7, 5: 8}
         return table.get(self.day, 8)
 
-    def get_morale_reject(self):
-        table = {1: 5, 2: 7, 3: 9, 4: 11, 5: 13}
-        return table.get(self.day, 13)
+    def get_morale_reject(self, reject_count):
+        """Reject penalty scales with how many dwarves were rejected today."""
+        base_table = {1: 2, 2: 3, 3: 4, 4: 5, 5: 6}
+        mult_table = {1: 2, 2: 2, 3: 3, 4: 3, 5: 4}
+        
+        base = base_table.get(self.day, 6)
+        mult = mult_table.get(self.day, 4)
+        
+        if reject_count == 0:
+            return 0
+        return base + ((reject_count - 1) * mult)
 
     def to_dict(self):
         return {
