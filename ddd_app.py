@@ -240,6 +240,7 @@ class Game:
         self.player = Player("Don")
         self.day = 1
         self.doculog = []
+        self.doculog.append("## 🌅 --- Day 1 ---")
         self.day_summaries = []
         self.load_day(1)
         self.grimwald_investments = []
@@ -849,6 +850,7 @@ elif st.session_state.screen == "upgrades":
     else:
         if st.button("▶️ BEGIN NEXT DAY", use_container_width=True, type="primary"):
             game.day += 1
+            game.doculog.append(f"## 🌅 --- Day {game.day} ---")
             game.load_day(game.day)
             st.session_state.day_consequences = game.apply_yesterday_consequences()
             st.session_state.screen = "new_day"
@@ -875,7 +877,10 @@ elif st.session_state.screen == "end":
 
     st.subheader("--- Final Docu-log ---")
     for entry in game.doculog:
-        st.write(entry)
+        if entry.startswith("##"):
+            st.subheader(entry.replace("## ", ""))
+        else:
+            st.write(entry)
 
     st.divider()
     if st.button("🔁 PLAY AGAIN", type="primary", use_container_width=True):
