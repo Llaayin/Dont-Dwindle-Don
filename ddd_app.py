@@ -100,7 +100,7 @@ class Player(Character):
 # NPC CLASS (Inherits Character)
 # ============================================
 class NPC(Character):
-    def __init__(self, name, request, resources, amounts, role, intro=None):
+    def __init__(self, name, request, resources, amounts, role, intro=None, gift_amount=0):
         super().__init__(name, role)
         self.request = request
         self.resources = resources
@@ -598,7 +598,7 @@ elif st.session_state.screen == "play":
             
     # Otherwise, show the normal Accept/Reject buttons
     else:
-    col_a, col_b = st.columns(2)
+        col_a, col_b = st.columns(2)
 
     with col_a:
         if st.button("✅ ACCEPT", use_container_width=True, type="primary"):
