@@ -310,27 +310,27 @@ class Game:
                 missing.append(f"{amount} {resource}")
         return len(missing) == 0, missing
 
-        def fulfill_request(self, npc):
-    
+    def fulfill_request(self, npc):
+
         if npc.gift_amount > 0:
-        self.player.gold += npc.gift_amount
+            self.player.gold += npc.gift_amount
+            npc.accepted = True
+            npc.status = "fine"
+            return 0 
+    
+
+        for resource, amount in zip(npc.resources, npc.amounts):
+            current = getattr(self.player, resource)
+            setattr(self.player, resource, current - amount)
+    
+        morale_change = self.get_morale_accept()
+        self.player.happiness = min(100, self.player.happiness + morale_change)
         npc.accepted = True
         npc.status = "fine"
-        return 0 
-        
+
+        if npc.name == "Grimwald" and "gold" in npc.resources:
+            self.grimwald_investments.append(self.day)
     
-    for resource, amount in zip(npc.resources, npc.amounts):
-        current = getattr(self.player, resource)
-        setattr(self.player, resource, current - amount)
-        
-    morale_change = self.get_morale_accept()
-    self.player.happiness = min(100, self.player.happiness + morale_change)
-    npc.accepted = True
-    npc.status = "fine"
-    
-    if npc.name == "Grimwald" and "gold" in npc.resources:
-        self.grimwald_investments.append(self.day)
-        
         if self.day >= 4:
             self.player.gold += 10
         else:
