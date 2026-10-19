@@ -106,6 +106,7 @@ class NPC(Character):
         self.resources = resources
         self.amounts = amounts
         self.intro = intro
+        self.gift_amount = gift_amount
         self.accepted = None
         self.status = "fine"
 
@@ -203,12 +204,6 @@ class Game:
                     ["medicine", "gold"], [3, 10], "Runekeeper"),
             ]
         elif day >= 5:
-            if len(self.grimwald_investments) >= 2:
-                self.player.gold += 100
-                self.doculog.append("💰 **Grimwald's Investment Paid Off!** He rewarded the hold with **+100 Gold** as a token of his appreciation.")
-            elif len(self.grimwald_investments) == 1:
-                self.player.gold += 40
-                self.doculog.append("💰 **Grimwald's Investment Returned (Partial).** You only funded him once, so he gave a smaller reward of **+40 Gold**.")
             self.npcs = [
                 NPC("Brunhilda", "needs food and water — the hold grows desperate.",
                     ["food", "water"], [10, 8], "Miner"),
@@ -216,8 +211,13 @@ class Game:
                     ["water", "food"], [8, 6], "Farmer"),
                 NPC("Durin", "needs medicine and water — illness spreads and the wells are dry.",
                     ["medicine", "water"], [6, 8], "Healer"),
-                NPC("Grimwald", "needs gold and food — the forges need tending and the crew must be fed.",
-                    ["gold", "food"], [15, 8], "Blacksmith"),
+                NPC("Grimwald", 
+                    "steps forward, a heavy pouch in his hands. 'Don. I haven't forgotten what ye did for the forges.'",
+                    [], [], "Blacksmith",
+                    intro="Grimwald approaches, wiping soot from his brow. He places a heavy pouch on your desk.",
+                    gift_amount=100 if len(self.grimwald_investments) >= 2 else (40 if len(self.grimwald_investments) == 1 else 0)
+                ),
+                ),
                 NPC("Sigrun", "needs medicine and gold — the wards fade faster than he can renew them.",
                     ["medicine", "gold"], [4, 12], "Runekeeper"),
             ]
@@ -311,14 +311,24 @@ class Game:
                 missing.append(f"{amount} {resource}")
         return len(missing) == 0, missing
 
-    def fulfill_request(self, npc):
+        def fulfill_request(self, npc):
+        # If it's a gift, just give the player the gold
+        if npc.gift_amount > 0:
+            self.player.gold += npc.gift_amount
+            npc.accepted = True
+            npc.status = "fine"
+            return 0 # No morale change for a gift
+            
+        # Otherwise, process the normal request
         for resource, amount in zip(npc.resources, npc.amounts):
             current = getattr(self.player, resource)
             setattr(self.player, resource, current - amount)
+            
         morale_change = self.get_morale_accept()
         self.player.happiness = min(100, self.player.happiness + morale_change)
         npc.accepted = True
         npc.status = "fine"
+        
         if npc.name == "Grimwald" and "gold" in npc.resources:
             self.grimwald_investments.append(self.day)
         
@@ -559,16 +569,36 @@ elif st.session_state.screen == "play":
         st.markdown(f"### 🧔 {npc.name}")
         st.caption(f"*{npc.role}*")
         
-    with col2:
+   with col2:
         st.markdown(f"**{npc.name}** {npc.request}")
-        st.markdown("**Requested:**")
-        for resource, amount in zip(npc.resources, npc.amounts):
-            st.markdown(f"- {amount} {resource}")
+        
+        # Check if this is a gift
+        if npc.gift_amount > 0:
+            st.markdown(f"**Gift:** {npc.gift_amount} Gold")
+        else:
+            st.markdown("**Requested:**")
+            for resource, amount in zip(npc.resources, npc.amounts):
+                st.markdown(f"- {amount} {resource}")
 
     st.divider()
 
-    can_afford, missing = game.check_request(npc)
+        can_afford, missing = game.check_request(npc)
 
+    # If it's a gift, only show the Accept button
+    if npc.gift_amount > 0:
+        if st.button(f"🤝 ACCEPT GRIMWALD'S GIFT", use_container_width=True, type="primary"):
+            game.fulfill_request(npc)
+            
+            # Log it in the DocuLog
+            msg = f"✅ **Grimwald's Token of Appreciation:** He handed over his thanks and **+{npc.gift_amount} Gold**."
+            game.doculog.append(msg)
+            
+            st.session_state.request_index += 1
+            st.session_state.requests_this_day += 1
+            st.rerun()
+            
+    # Otherwise, show the normal Accept/Reject buttons
+    else:
     col_a, col_b = st.columns(2)
 
     with col_a:
