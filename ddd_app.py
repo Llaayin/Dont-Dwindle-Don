@@ -240,6 +240,7 @@ class Game:
         self.player = Player("Don")
         self.day = 1
         self.doculog = []
+        self.doculog.append("## 🌅 --- Day 1 ---")
         self.day_summaries = []
         self.load_day(1)
         self.grimwald_investments = []
@@ -839,6 +840,7 @@ elif st.session_state.screen == "upgrades":
     else:
         if st.button("▶️ BEGIN NEXT DAY", use_container_width=True, type="primary"):
             game.day += 1
+            game.doculog.append(f"## 🌅 --- Day {game.day} ---")
             game.load_day(game.day)
             st.session_state.day_consequences = game.apply_yesterday_consequences()
             st.session_state.screen = "new_day"
