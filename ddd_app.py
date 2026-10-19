@@ -568,7 +568,7 @@ elif st.session_state.screen == "play":
         st.markdown(f"### 🧔 {npc.name}")
         st.caption(f"*{npc.role}*")
         
-   with col2:
+    with col2:
         st.markdown(f"**{npc.name}** {npc.request}")
         
         # Check if this is a gift
@@ -581,7 +581,7 @@ elif st.session_state.screen == "play":
 
     st.divider()
 
-        can_afford, missing = game.check_request(npc)
+    can_afford, missing = game.check_request(npc)
 
     # If it's a gift, only show the Accept button
     if npc.gift_amount > 0:
