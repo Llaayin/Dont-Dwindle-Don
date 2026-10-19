@@ -498,6 +498,7 @@ elif st.session_state.screen == "new_day":
         st.session_state.request_index = 0
         st.session_state.requests_this_day = 0
         st.session_state.rejects_this_day = 0
+        st.session_state.doculog_start_index = len(game.doculog)
         st.session_state.screen = "play"
         st.rerun()
 
