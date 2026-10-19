@@ -154,15 +154,15 @@ class Game:
             ]
         elif day == 2:
             self.npcs = [
-                NPC("Brunhilda", "needs extra food for an extra refugee along with the rest of her kin.",
+                NPC("Brunhilda", "needs extra food for an extra refugee along with the rest of her crew.",
                     ["food"], [12], "Miner"),
                 NPC("Thrain", "needs more water as the ground dries up faster than he expected, threatening the loss of crops.",
                     ["water"], [10], "Farmer"),
-                NPC("Durin", "needs more medicine — the sick are multiplying.",
+                NPC("Durin", "needs more medicine as fevers begin to spread even more rampantly in the infirmaries.",
                     ["medicine"], [8], "Healer"),
                 NPC(
                     "Grimwald",
-                    "needs gold to repair the forges.",
+                    "needs gold to purchase materials in order to restore the forges.",
                     ["gold"],
                     [20],
                     "Blacksmith",
@@ -177,7 +177,7 @@ class Game:
                     ["water"], [12], "Farmer"),
                 NPC("Durin", "needs more medicine as a new fever spreads in the mines.",
                     ["medicine"], [10], "Healer"),
-                NPC("Grimwald", "requests for more gold funding in order to reheat the forges.",
+                NPC("Grimwald", "requests for more gold funding in order to purchase more tinder wood and coal for the forges' furnaces.",
                     ["gold"], [25], "Blacksmith"),
                 NPC(
                     "Sigrun",
@@ -190,13 +190,13 @@ class Game:
             ]
         elif day == 4:
             self.npcs = [
-                NPC("Brunhilda", "needs food and water — the tunnels are cold and her kin are both hungry and thirsty.",
+                NPC("Brunhilda", "needs food and water for they require the energy for the long excavation job of carving out a new hole to avoid the flooded routes.",
                     ["food", "water"], [8, 6], "Miner"),
                 NPC("Thrain", "needs water and food — his farmhands are hungry and the soil is dry.",
                     ["water", "food"], [6, 5], "Farmer"),
                 NPC("Durin", "needs medicine and water — the wounded need tending and the wells are low.",
                     ["medicine", "water"], [5, 6], "Healer"),
-                NPC("Grimwald", "needs gold and food — the forge crew is hungry and the repairs remain unfinished.",
+                NPC("Grimwald", "needs gold and food as his crew grows hungry while there are still some repairs that remain unfinished.",
                     ["gold", "food"], [13, 6], "Blacksmith"),
                 NPC("Sigrun", "needs medicine and gold — the wards require both herbs and offerings.",
                     ["medicine", "gold"], [3, 10], "Runekeeper"),
@@ -211,7 +211,7 @@ class Game:
                     ["medicine", "water"], [6, 8], "Healer"),
                 NPC("Grimwald", "needs gold and food — the forges need tending and the crew must be fed.",
                     ["gold", "food"], [15, 8], "Blacksmith"),
-                NPC("Sigrun", "needs medicine and gold — the wards fade faster than she can renew them.",
+                NPC("Sigrun", "needs medicine and gold — the wards fade faster than he can renew them.",
                     ["medicine", "gold"], [4, 12], "Runekeeper"),
             ]
 
@@ -310,22 +310,29 @@ class Game:
         npc.accepted = True
         npc.status = "fine"
         return morale_change
+        if self.day >= 4:
+            self.player.gold += 10
+        else:
+            self.player.gold += 5
+
+        return morale_change
 
     def report_dwarf(self, npc, morale_change):
         change_str = f"**Morale {'+' if morale_change >= 0 else ''}{morale_change}**"
+        gold_str = " and **+5 Gold**" if npc.accepted is True else ""
 
         if len(npc.resources) == 1:
             resource = npc.resources[0]
             if npc.accepted is True:
                 if resource == "food":
-                    return f"✅ {npc.name} the {npc.role}: Food is restocked. {npc.name}'s kin will get to eat tonight. {change_str}"
+                    return f"✅ {npc.name} the {npc.role}: Food is restocked. {npc.name}'s kin will get to eat tonight. {change_str}{gold_str}"
                 elif resource == "water":
-                    return f"✅ {npc.name} the {npc.role}: Water is restocked. The crops have been moistened and are able to grow a little more. {change_str}"
+                    return f"✅ {npc.name} the {npc.role}: Water is restocked. The crops have been moistened and are able to grow a little more. {change_str}{gold_str}"
                 elif resource == "medicine":
-                    return f"✅ {npc.name} the {npc.role}: Medicine is restocked. {npc.name} breathes a sigh of relief as the injured workers' wounds can finally be taken care of. {change_str}"
+                    return f"✅ {npc.name} the {npc.role}: Medicine is restocked. {npc.name} breathes a sigh of relief as the injured workers' wounds can finally be taken care of. {change_str}{gold_str}"
                 elif resource == "gold":
                     if npc.name == "Grimwald":
-                        return f"✅ Grimwald the Blacksmith: The gold is handed over. 'My thanks, Don. I'll have the forges roaring by morning.' {change_str}"
+                        return f"✅ Grimwald the Blacksmith: The gold is handed over. 'My thanks, Don. I'll have the forges roaring by morning.' {change_str}{gold_str}"
                     return f"✅ {npc.name} the {npc.role}: Gold received. {change_str}"
             elif npc.status == "denied":
                 if resource == "food":
@@ -354,7 +361,7 @@ class Game:
                 f"{amount} {resource}" for resource, amount in zip(npc.resources, npc.amounts)
             )
             if npc.accepted is True:
-                return f"✅ {npc.name} the {npc.role}: Received {resource_str}. They nod with gratitude. {change_str}"
+                return f"✅ {npc.name} the {npc.role}: Received {resource_str}. They nod with gratitude. {change_str}{gold_str}"
             elif npc.status == "denied":
                 return f"⚠️ {npc.name} the {npc.role}: Requested {resource_str}, but the hold couldn't spare it. {change_str}"
             elif npc.status == "rejected":
