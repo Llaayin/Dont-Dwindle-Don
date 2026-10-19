@@ -598,27 +598,27 @@ elif st.session_state.screen == "play":
             
     # Otherwise, show the normal Accept/Reject buttons
     else:
-        col_a, col_b = st.columns(2)
-
-    with col_a:
-        if st.button("✅ ACCEPT", use_container_width=True, type="primary"):
-            if can_afford:
-                morale_change = game.fulfill_request(npc)
-            else:
-                morale_change = -game.get_morale_deny()
-                game.player.happiness += morale_change
-                npc.accepted = False
-                npc.status = "denied"
-
-            entry = game.report_dwarf(npc, morale_change)
-            game.doculog.append(entry)
-            st.session_state.request_index += 1
-            st.session_state.requests_this_day += 1
-            st.rerun()
-
-    with col_b:
-        if st.button("❌ REJECT", use_container_width=True):
-            st.session_state.rejects_this_day += 1
+            col_a, col_b = st.columns(2)
+    
+        with col_a:
+            if st.button("✅ ACCEPT", use_container_width=True, type="primary"):
+                if can_afford:
+                    morale_change = game.fulfill_request(npc)
+                else:
+                    morale_change = -game.get_morale_deny()
+                    game.player.happiness += morale_change
+                    npc.accepted = False
+                    npc.status = "denied"
+    
+                entry = game.report_dwarf(npc, morale_change)
+                game.doculog.append(entry)
+                st.session_state.request_index += 1
+                st.session_state.requests_this_day += 1
+                st.rerun()
+    
+        with col_b:
+            if st.button("❌ REJECT", use_container_width=True):
+                st.session_state.rejects_this_day += 1
             morale_change = -game.get_morale_reject(st.session_state.rejects_this_day)
             
             game.player.happiness += morale_change
