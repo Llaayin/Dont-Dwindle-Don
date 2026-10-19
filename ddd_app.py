@@ -279,6 +279,7 @@ class Game:
             "day_summaries": self.day_summaries,
             "start_happiness": self.start_happiness,
             "grimwald_investments": self.grimwald_investments,
+            "doculog_start_index": st.session_state.get("doculog_start_index", 0),
         }
 
     def load_from_dict(self, data):
@@ -294,6 +295,7 @@ class Game:
         self.start_happiness = data.get("start_happiness", 70)
         self.load_day(self.day)
         self.grimwald_investments = data.get("grimwald_investments", [])
+        st.session_state.doculog_start_index = data.get("doculog_start_index", 0)
 
     def apply_yesterday_consequences(self):
         if not self.day_summaries:
@@ -495,6 +497,8 @@ if st.session_state.screen == "title":
                     st.session_state.requests_this_day = 0
                     st.session_state.day_consequences = []
                     st.session_state.screen = "play"
+                    st.session_state.rejects_this_day = 0
+                    st.session_state.income_given_today = False
                     st.success(f"Loaded Day {data['day']} save!")
                     st.rerun()
                 except Exception as e:
@@ -642,8 +646,12 @@ elif st.session_state.screen == "play":
     if game.doculog:
         st.divider()
         with st.expander("📖 Open Don's Docu-log (Today's Entries)", expanded=True):
-            for entry in game.doculog[st.session_state.doculog_start_index:]:
-                st.write(entry)
+            start_idx = st.session_state.get("doculog_start_index", 0)
+            for entry in game.doculog[start_idx:]:
+                if entry.startswith("##"):
+                    st.subheader(entry.replace("## ", ""))
+                else:
+                    st.write(entry)
 
 # ============================================
 # EVALUATION SCREEN
