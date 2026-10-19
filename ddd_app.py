@@ -309,7 +309,7 @@ class Game:
         self.player.happiness = min(100, self.player.happiness + morale_change)
         npc.accepted = True
         npc.status = "fine"
-        return morale_change
+        
         if self.day >= 4:
             self.player.gold += 10
         else:
@@ -506,6 +506,7 @@ elif st.session_state.screen == "new_day":
         game.start_happiness = game.player.happiness
         st.session_state.request_index = 0
         st.session_state.requests_this_day = 0
+        st.session_state.income_given_today = False
         st.session_state.rejects_this_day = 0
         st.session_state.doculog_start_index = len(game.doculog)
         st.session_state.screen = "play"
@@ -626,7 +627,7 @@ elif st.session_state.screen == "evaluation":
         st.success("🌟 The hold's spirit has risen today. Don's leadership has not gone unnoticed.")
     elif morale_change < -9: 
         # Only trigger the bad message if morale dropped by 10 or more
-        st.error("💀 The hold's morale has taken a heavy blow. A shadow hangs over the hold.")
+        st.error("💀 The hold's morale has taken a heavy blow. A looming shadow now hangs over the hold.")
     elif morale_change < 0:
         # Small drops just get a warning
         st.warning("⚠️ The hold's morale dipped slightly today, but the dwarves press on.")
@@ -635,9 +636,14 @@ elif st.session_state.screen == "evaluation":
 
     st.divider()
     st.subheader("💰 Hold Income")
-    income = game.calculate_income()
-    game.gold_income = income
-    game.player.gold += income
+       
+    if not st.session_state.get("income_given_today", False):
+        income = game.calculate_income()
+        game.gold_income = income
+        game.player.gold += income
+        st.session_state.income_given_today = True 
+    else:
+        income = game.gold_income 
 
     if income > 0:
         st.success(f"The mines produce **+{income} gold** today.")
