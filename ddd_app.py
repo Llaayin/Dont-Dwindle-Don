@@ -843,7 +843,7 @@ elif st.session_state.screen == "upgrades":
     st.divider()
 
     if game.day >= Game.MAX_DAY:
-        if st.button("▶️ SURVIVE THE WEEK", use_container_width=True, type="primary"):
+        if st.button("▶️ CLOCK OUT", use_container_width=True, type="primary"):
             st.session_state.screen = "end"
             st.rerun()
     else:
