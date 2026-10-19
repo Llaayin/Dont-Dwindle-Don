@@ -539,8 +539,7 @@ elif st.session_state.screen == "new_day":
 
     if st.button("▶️ BEGIN DAY", type="primary", use_container_width=True):
         game.start_happiness = game.player.happiness
-        if game.day == 7:
-            game.doculog.append("## 🌅 --- Day 7 ---")
+        
         st.session_state.request_index = 0
         st.session_state.requests_this_day = 0
         st.session_state.income_given_today = False
